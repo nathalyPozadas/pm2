@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\ListaEmpaquesRequest;
+use App\Models\Almacen;
+use App\Models\Empresa;
+use App\Models\ListaEmpaques;
+use App\Models\Proveedor;
+use App\Models\UbicacionAlmacen;
+use Illuminate\Http\Request;
+
+class ListaEmpaquesController extends Controller
+{
+    public function index()
+    {
+        //$empresa_id = obtener_empresa();
+        $listas = ListaEmpaques::join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
+        ->select('lista_empaques.*', 'proveedor.nombre as proveedor_nombre')
+        ->orderBy('lista_empaques.id', 'desc')
+        ->get();
+        $empresa = Empresa::find(1);
+        $icono_empresa = $empresa->icono;
+
+        $proveedores = Proveedor::where('empresa_id', 1)->orderBy('nombre')->get();
+        //$almacenes = Almacen::where('empresa_id', 1)->orderBy('nombre')->get();
+        
+        $almacenes = Almacen::orderBy('nombre')->get();
+        foreach($almacenes as $almacen){
+            $almacen->ubicaciones = UbicacionAlmacen::where('ubicacion_almacen.almacen_id', $almacen->id)
+            ->whereNull('ubicacion_almacen.deleted_at')
+            ->get();
+        }
+
+        return view("lista_empaques.index", ['listas'=>$listas, 'icono_empresa'=>$icono_empresa, 'proveedores'=>$proveedores, 'almacenes'=>$almacenes ]);
+    }
+
+    public function store(ListaEmpaquesRequest $request)
+    {
+
+        $listaEmpaques = new ListaEmpaques();
+        $listaEmpaques->codigo = $request->codigo;
+        $listaEmpaques->factura = $request->factura;
+        $listaEmpaques->proveedor_id =  $request->proveedor_id;
+        $listaEmpaques->fecha_recepcion = $request->fecha_recepcion;
+        $listaEmpaques->fecha_llegada = $request->fecha_llegada;
+        $listaEmpaques->fecha_creacion = now();
+        $listaEmpaques->stock_esperado = $request->stock_esperado;
+        $listaEmpaques->encargado_id = auth()->user()->trabajador_id;
+        $listaEmpaques->empresa_id = auth()->user()->empresa_id;
+        $listaEmpaques->almacen_id = $request->almacen_id;
+        $listaEmpaques->save();
+
+        // Redirigir con un mensaje de éxito
+        return redirect()->route('home');
+    }
+
+    public function update($id, ListaEmpaquesRequest $request)
+    {
+        $listaEmpaques = ListaEmpaques::findOrFail($id);
+        
+        $listaEmpaques->codigo = $request->input('codigo');
+        $listaEmpaques->factura = $request->input('factura');
+        $listaEmpaques->proveedor_id = $request->input('proveedor_id');
+        $listaEmpaques->fecha_recepcion = $request->input('fecha_recepcion');
+        $listaEmpaques->stock_esperado = $request->input('stock_esperado');
+        $listaEmpaques->almacen_id = $request->input('almacen_id');
+        
+        $listaEmpaques->update();
+
+        return redirect()->route('home')->with('success', 'Lista de empaques actualizada exitosamente.');
+    }
+
+    public function delete($id)
+    {
+        $listaEmpaques = ListaEmpaques::findOrFail($id);
+        $listaEmpaques->delete(); 
+
+        return redirect()->route('home')->with('success', 'Lista de empaques eliminada correctamente.');
+    }
+}

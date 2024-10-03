@@ -1,0 +1,9 @@
+// Body
+$body-bg: rgb(37, 150, 190);
+$primary: rgb(37, 150, 190);
+$primary-light: lighten($primary, 15%);
+$primary-dark: darken($primary, 15%);
+// Typography
+$font-family-sans-serif: 'Nunito', sans-serif;
+$font-size-base: 0.9rem;
+$line-height-base: 1.6;

@@ -1,0 +1,31 @@
+.container-odontograma {
+    /*display: grid;*/
+    
+    grid-template-columns: repeat(18, 1fr); /* Divide el contenedor en 18 columnas iguales */
+    gap: 1%; /* Espacio entre las columnas */
+   
+  }
+  
+  .item-odontograma {
+    text-align: center;
+    border: 1px ;
+    width: 4%;
+    font-size: 80%;
+  }
+  
+
+  .item-odontograma-hover:hover {
+    text-align: center;
+    border: 1px ;
+   background-color: rgba(204, 214, 214, 0.384);
+    width: 4%;
+    font-size: 80%;
+  }
+
+  .badge-custom-width {
+    width: 250px; /* Puedes ajustar el valor según tus necesidades */
+    display: inline-block; /* Esto asegura que el ancho se aplique correctamente */
+    text-align: center; /* Centra el texto dentro del badge */
+}
+
+  
