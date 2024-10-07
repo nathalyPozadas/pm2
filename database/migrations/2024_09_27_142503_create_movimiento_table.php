@@ -31,8 +31,8 @@ return new class extends Migration
 
             
             $table->foreign('empaque_id')->references('id')->on('empaque');
-            $table->foreign('ubicacion_origen_id')->references('id')->on('almacen');
-            $table->foreign(columns: 'ubicacion_destino_id')->references('id')->on('almacen');
+            $table->foreign('ubicacion_origen_id')->references('id')->on('ubicacion_almacen');
+            $table->foreign(columns: 'ubicacion_destino_id')->references('id')->on('ubicacion_almacen');
             $table->foreign(columns: 'encargado_id')->references('id')->on('trabajador');
             $table->foreign('empresa_id')->references('id')->on('empresa');
         });

@@ -36,8 +36,9 @@ class MovimientoController extends Controller
 
             $listaEmpaque = ListaEmpaques::find($empaque->lista_empaques_id);
             $listaEmpaque->stock_actual = $listaEmpaque->stock_actual-1;
+            $listaEmpaque->update();
         }
-
+       // dd($movimientoEmpaque);
         $movimientoEmpaque->save();
         $empaque->update();
       

@@ -31,16 +31,27 @@
                             
                             <!-- Input más pequeño -->
                             <div class="col-auto">
-                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="AJ-21">
+                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="20JA-02">
                             </div>
                         </div>
+
+                        <div class="d-flex align-items-center m-1" aria-label="...">
+                            <!-- Label más pequeño -->
+                            <label for="OC_Factura" class="mr-2 mb-0 small">OC/Factura</label>
+                            
+                            <!-- Input más pequeño -->
+                            <div class="col-auto">
+                                <input type="text" class="form-control form-control-sm" id="OC_Factura" placeholder="100">
+                            </div>
+                        </div>
+
                         <div class="d-flex align-items-center m-1" aria-label="...">
                             <!-- Label más pequeño -->
                             <label for="codigo" class="mr-2 mb-0 small">Proveedor</label>
                             
                             <!-- Input más pequeño -->
                             <div class="col-auto">
-                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="AJ-21">
+                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="VODAFAST">
                             </div>
                         </div>
 
@@ -50,7 +61,7 @@
                             
                             <!-- Input más pequeño -->
                             <div class="col-auto">
-                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="AJ-21">
+                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="10-03-2024">
                             </div>
                         </div>
                         <!-- <button class="btn btn-icon btn-2 btn-primary" type="button" onClick="modalRegistrarPackingList()">
@@ -89,15 +100,15 @@
                 </div>
 
                 <div class="table-responsive  px-4">
-                    <table id="tablaListaEmpaques" class="table align-items-center table-flush">
+                    <table id="tablaListaEmpaques" class="table align-items-center table-flush table-striped">
                         <thead class="thead-light">
                             <tr>
                                 <th scope="col">N°</th>
                                 <th scope="col">Código de Lista</th>
                                 <th scope="col">Proveedor</th>
-                                <th scope="col">Stock Pallet Llegada</th>
+                                <th scope="col">Stock Llegada</th>
                                 <th scope="col">Stock Registrado</th>
-                                <th scope="col">Pallet Stock Actual</th>
+                                <th scope="col">Stock Actual</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -162,6 +173,39 @@
 @push('js')
 
     <script>
+        var table = $('#tablaListaEmpaques').DataTable({
+                language: {
+                    "decimal": "",
+                    "emptyTable": "No hay información",
+                    "info": "(_START_ al _END_) de _TOTAL_ resultados",
+                    "infoEmpty": "Mostrando 0 al 0 de 0 Entradas",
+                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Mostrar _MENU_ Resultados",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "Sin resultados encontrados",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": ">",
+                        "previous": "<"
+                    }
+                },
+                lengthMenu: [10, 25, 50, 100], // Opciones del selector de longitud de la página
+                pageLength: 10, // Valor inicial del selector de longitud de la página
+            });
+
+
+
+
+
+
+
+
+
         function modalRegistrarPackingList(){
             $('#registrarPackingList').empty();
 

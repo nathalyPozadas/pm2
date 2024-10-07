@@ -15,11 +15,27 @@ class EmpaqueController extends Controller
     public function index()
     {
         //$empresa_id = obtener_empresa();
+        
         $empaques = Empaque::join('lista_empaques', 'empaque.lista_empaques_id', '=', 'lista_empaques.id')
             ->join('ubicacion_almacen', 'empaque.ubicacion_almacen_id', '=', 'ubicacion_almacen.id')
             ->join('almacen', 'ubicacion_almacen.almacen_id', '=', 'almacen.id')
             ->select('empaque.*', 'lista_empaques.codigo as empaque_lista_empaque_codigo', 'almacen.nombre as empaque_almacen_nombre', 'ubicacion_almacen.nombre as empaque_ubicacion_nombre')
+            ->orderBy('empaque.id', 'desc')
             ->get();
+        
+        /*
+        $empaques = Empaque::leftJoin('lista_empaques', 'empaque.lista_empaques_id', '=', 'lista_empaques.id')
+        ->leftJoin('ubicacion_almacen', 'empaque.ubicacion_almacen_id', '=', 'ubicacion_almacen.id')
+        ->leftJoin('almacen', 'ubicacion_almacen.almacen_id', '=', 'almacen.id')
+        ->select(
+            'empaque.*', 
+            'lista_empaques.codigo as empaque_lista_empaque_codigo', 
+            'almacen.nombre as empaque_almacen_nombre', 
+            'ubicacion_almacen.nombre as empaque_ubicacion_nombre'
+        )
+        ->orderBy('empaque.id', 'desc')
+        ->get();
+        */
 
         $almacenes = Almacen::all();
         foreach ($almacenes as $almacen) {
@@ -66,6 +82,9 @@ class EmpaqueController extends Controller
         $lista_empaques->stock_actual = $lista_empaques->stock_actual + 1;
         $lista_empaques->update();
 
-        return redirect()->route('empaque.index');
+        if($request->vista == 'vista_empaques'){
+            return redirect()->route('empaque.index');
+        }
+        return redirect()->route('lista_empaques.index');
     }
 }

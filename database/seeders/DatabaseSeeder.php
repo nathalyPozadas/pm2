@@ -36,8 +36,8 @@ class DatabaseSeeder extends Seeder
 
         
         $trabajador = Trabajador::create([
-            'nombres' => 'Pablo',
-            'apellidos' => 'Suarez Merida',
+            'nombres' => 'Juan',
+            'apellidos' => 'Perez',
             'fecha_nacimiento' => '2024-06-05',
             'cargo' => 'gerente',
             'telefono' => '67832810',
@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
 
        $usuario = User::create([
           // 'name' => 'pablo perez',
-           'email' => 'pablo.suarez@gmail.com',
+           'email' => 'perbol@gmail.com',
            'email_verified_at' => now(),
            'password' => Hash::make('admin'),
            'created_at' => now(),

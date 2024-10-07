@@ -50,8 +50,8 @@
                                     <span class="text-muted">{{ __('Remember me') }}</span>
                                 </label>
                             </div>
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary my-4">{{ __('Ingresar') }}</button>
+                            <div >
+                                <button type="submit" class="btn btn-primary my-4 input-group justify-content-center">{{ __('Ingresar') }}</button>
                             </div>
                         </form>
                     </div>

@@ -27,11 +27,11 @@
                     <div class="d-flex align-items-center m-1" aria-label="...">
                         <div class="d-flex align-items-center m-1" aria-label="...">
                             <!-- Label más pequeño -->
-                            <label for="codigo" class="mr-2 mb-0 small">Lista de empaque</label>
+                            <label for="codigo" class="mr-2 mb-0 small">Codigo empaque</label>
                             
                             <!-- Input más pequeño -->
                             <div class="col-auto">
-                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="AJ-21">
+                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="">
                             </div>
                         </div>
                         <div class="d-flex align-items-center m-1" aria-label="...">
@@ -40,19 +40,11 @@
                             
                             <!-- Input más pequeño -->
                             <div class="col-auto">
-                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="AJ-21">
+                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="">
                             </div>
                         </div>
 
-                        <div class="d-flex align-items-center m-1" aria-label="...">
-                            <!-- Label más pequeño -->
-                            <label for="codigo" class="mr-2 mb-0 small">Ubicacion</label>
-                            
-                            <!-- Input más pequeño -->
-                            <div class="col-auto">
-                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="AJ-21">
-                            </div>
-                        </div>
+                    
                         <!-- <button class="btn btn-icon btn-2 btn-primary" type="button" onClick="modalRegistrarPackingList()">
                             Nuevo
                         </button>-->
@@ -89,12 +81,13 @@
                 </div>
 
                 <div class="table-responsive  px-4">
-                    <table id="tablaEmpaques" class="table align-items-center table-flush">
+                    <table id="tablaEmpaques" class="table align-items-center table-flush table-striped">
                         <thead class="thead-light">
                             <tr>
                                 <th scope="col">N°</th>
                                 <th scope="col">Lista de Empaque</th>
-                                <th scope="col">Peso</th>
+                                <th scope="col">Tipo</th>
+                                <th scope="col">Descripcion</th>
                                 <th scope="col">Estado</th>
                                 <th scope="col">Almacen</th>
                                 <th scope="col">Lugar</th>
@@ -106,26 +99,30 @@
                                 <tr>
                                     <td>{{$empaque->id}}</td>
                                     <td>{{$empaque->empaque_lista_empaque_codigo}}</td>
-                                    <td>{{ $empaque->peso !== null ? $empaque->peso.' '.$empaque->unidad_medida : '' }}</td>
+                                    <td style="text-transform: uppercase;">{{$empaque->tipo}}</td>
+                                    <td>{{ $empaque->descripcion}}</td>
 
                                     <td>{{$empaque->estado}}</td>
                                     <td>{{$empaque->empaque_almacen_nombre}}</td>
                                     <td>{{$empaque->empaque_ubicacion_nombre}}</td>
                                     <td>
-                                        <a>
-                                            <button class="btn btn-icon btn-2 btn-primary" type="button" onclick="modalEditarEmpaque(this)" data-lista="{{ json_encode($empaque) }}">
-                                                <span class="btn-inner--icon"><i class="far fa-edit"></i></span>
-                                            </button>
-                                        </a>
+                                        @if($empaque->ubicacion_almacen_id !== null)
+                                            <a>
+                                                <button class="btn btn-icon btn-2 btn-primary" type="button" onclick="modalEditarEmpaque(this)" data-lista="{{ json_encode($empaque) }}">
+                                                    <span class="btn-inner--icon"><i class="far fa-edit"></i></span>
+                                                </button>
+                                            </a>
 
-                                        <a href="#">
-                                            <button class="btn btn-icon btn-2 btn-primary" type="button" onclick="modalEliminarEmpaque(this)" data-codigo="{{ json_encode($empaque) }}">
-                                                <span class="btn-inner--icon"><i class="fas fa-times-circle"></i></span>
+                                            <a href="#">
+                                                <button class="btn btn-icon btn-2 btn-primary" type="button" onclick="modalEliminarEmpaque(this)" data-codigo="{{ json_encode($empaque) }}">
+                                                    <span class="btn-inner--icon"><i class="fas fa-times-circle"></i></span>
+                                                </button>
+                                            </a>
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#moverEmpaque" onClick="modalMoverEmpaque({{$empaque->id}})" >
+                                                    <span class="btn-inner--icon"><i class="fas fa-sign-out-alt"></i></span>
                                             </button>
-                                        </a>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#moverEmpaque" onClick="modalMoverEmpaque({{$empaque->id}})" >
-                                                <span class="btn-inner--icon"><i class="fas fa-sign-out-alt"></i></span>
-                                        </button>
+                                        
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -158,6 +155,35 @@
 @push('js')
 
     <script>
+            var table = $('#tablaEmpaques').DataTable({
+                language: {
+                    "decimal": "",
+                    "emptyTable": "No hay información",
+                    "info": "(_START_ al _END_) de _TOTAL_ resultados",
+                    "infoEmpty": "Mostrando 0 al 0 de 0 Entradas",
+                    "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Mostrar _MENU_ Resultados",
+                    "loadingRecords": "Cargando...",
+                    "processing": "Procesando...",
+                    "search": "Buscar:",
+                    "zeroRecords": "Sin resultados encontrados",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": ">",
+                        "previous": "<"
+                    }
+                },
+                lengthMenu: [10, 25, 50, 100], // Opciones del selector de longitud de la página
+                pageLength: 10, // Valor inicial del selector de longitud de la página
+            });
+
+
+
+
+
         function modalRegistrarEmpaque(){
             $('#registrarEmpaque').empty();
 
@@ -175,6 +201,8 @@
                                     @method('post')
                             <div class="modal-body">
                                     
+                                    <input type="text" name="vista" id="vista" value="vista_empaques" class="form-control form-control-alternative d-none" >
+
                                     <!-- Lista empaques -->
                                     <div class="form-group">
                                         <label for="input-lista_empaques_id" class="form-control-label">Codigo lista empaques</label>
