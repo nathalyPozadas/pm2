@@ -87,4 +87,12 @@ class EmpaqueController extends Controller
         }
         return redirect()->route('lista_empaques.index');
     }
+
+    public function delete($id)
+    {
+        
+        $empaque = Empaque::findOrFail($id);
+        $empaque->delete();
+
+    }
 }

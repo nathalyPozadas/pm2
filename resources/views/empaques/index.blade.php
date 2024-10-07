@@ -9,57 +9,7 @@
 
 <div class="container-fluid mt--9">
 
-    <div class="row">
-        <div class="col">
-            <div class="card shadow">
-                <div class="card-header border-0">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <h3 class="mb-0">Buscar empaques</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                </div>
-
-                <div class="card-footer py-4">
-                    <div class="d-flex align-items-center m-1" aria-label="...">
-                        <div class="d-flex align-items-center m-1" aria-label="...">
-                            <!-- Label más pequeño -->
-                            <label for="codigo" class="mr-2 mb-0 small">Codigo empaque</label>
-                            
-                            <!-- Input más pequeño -->
-                            <div class="col-auto">
-                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="">
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center m-1" aria-label="...">
-                            <!-- Label más pequeño -->
-                            <label for="codigo" class="mr-2 mb-0 small">Descripcion</label>
-                            
-                            <!-- Input más pequeño -->
-                            <div class="col-auto">
-                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="">
-                            </div>
-                        </div>
-
-                    
-                        <!-- <button class="btn btn-icon btn-2 btn-primary" type="button" onClick="modalRegistrarPackingList()">
-                            Nuevo
-                        </button>-->
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registrarEmpaque" onClick="modalRegistrarEmpaque()">
-                            Nuevo
-                        </button>
-                    </div>
-                </div>
-
-
-
-            </div>
-        </div>
-    </div>
-    <div class="row mb-4"></div>
+    
 
     <div class="row">
         <div class="col">
@@ -72,7 +22,9 @@
                     </div>
                     <div class="row ">
                         <div class="col-3">
-                            
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registrarEmpaque" onClick="modalRegistrarEmpaque()">
+                                Nuevo
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -97,7 +49,9 @@
                         <tbody>
                             @foreach ($empaques as $empaque)
                                 <tr>
-                                    <td>{{$empaque->id}}</td>
+                                    <td><span class="badge badge-dot mr-4">
+                                    <i class="@if($empaque->estado == 'dañado') bg-danger @elseif($empaque->estado == 'correcto') bg-success @elseif($empaque->estado == 'mermado') bg-info @endif"></i>
+                                        </span>{{$empaque->id}}</td>
                                     <td>{{$empaque->empaque_lista_empaque_codigo}}</td>
                                     <td style="text-transform: uppercase;">{{$empaque->tipo}}</td>
                                     <td>{{ $empaque->descripcion}}</td>

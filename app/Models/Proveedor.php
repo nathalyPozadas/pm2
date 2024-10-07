@@ -14,6 +14,7 @@ class Proveedor extends Model
     protected $table = 'proveedor';
     public $timestamps = true;
     protected $fillable = [
+        'codigo_erp',
         'nombre',
         'empresa_id'
     ];

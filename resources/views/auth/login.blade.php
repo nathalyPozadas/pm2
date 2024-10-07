@@ -1,15 +1,19 @@
-@extends('layouts.app', ['class' => 'bg-gradient-primary'])
+@extends('layouts.app', ['class' => 'bg-gradient-secondary'])
 
 @section('content')
     @include('layouts.headers.guest')
 
-    <div class="container mt--9 pb-4">
-        <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-7">
-                <div class="card bg-secondary shadow border-0">
+    <div class="container ">
+        <div class="row ">
+            <div class="col-lg-6 d-flex justify-content-center align-items-center text-center">
+                <img src="{{ asset('argon') }}/img/brand/LOGOTIPO-PERBOL-1024x274.png" alt="Logo" class="img-fluid" style="max-width: 95%;">
+            </div>
+
+            <div class="col-lg-6 col-md-7">
+                <div class="card bg-primary shadow border-0">
                     <div class="card-header bg-transparent pb-5">
                         <div class="text-muted text-center mt-2 mb-3"><small>{{ __('Inicio de Sesión') }}</small></div>
-                        <div class="btn-wrapper text-center">
+                        <div class="btn-wrapper text-center-login ">
                             Pallets Management
                         </div>
                     </div>
@@ -51,15 +55,12 @@
                                 </label>
                             </div>
                             <div >
-                                <button type="submit" class="btn btn-primary my-4 input-group justify-content-center">{{ __('Ingresar') }}</button>
+                                <button type="submit" class="btn btn-primary my-4 input-group justify-content-center" style="background-color: #5882db;">{{ __('Ingresar') }}</button>
                             </div>
                         </form>
                     </div>
                 </div>
                 
-                <div class="container mt-7 center-items text-center">
-  
-</div>
                 
             </div>
         </div>

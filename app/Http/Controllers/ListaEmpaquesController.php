@@ -40,6 +40,8 @@ class ListaEmpaquesController extends Controller
 
         $listaEmpaques = new ListaEmpaques();
         $listaEmpaques->codigo = $request->codigo;
+        $listaEmpaques->canal_aduana = $request->canal_aduana;
+        $listaEmpaques->transporte = $request->transporte;
         $listaEmpaques->factura = $request->factura;
         $listaEmpaques->proveedor_id =  $request->proveedor_id;
         $listaEmpaques->fecha_recepcion = $request->fecha_recepcion;
@@ -59,7 +61,9 @@ class ListaEmpaquesController extends Controller
     {
         $listaEmpaques = ListaEmpaques::findOrFail($id);
         
-        $listaEmpaques->codigo = $request->input('codigo');
+        $listaEmpaques->codigo = $request->codigo;
+        $listaEmpaques->canal_aduana = $request->canal_aduana;
+        $listaEmpaques->transporte = $request->transporte;
         $listaEmpaques->factura = $request->input('factura');
         $listaEmpaques->proveedor_id = $request->input('proveedor_id');
         $listaEmpaques->fecha_recepcion = $request->input('fecha_recepcion');
@@ -73,8 +77,14 @@ class ListaEmpaquesController extends Controller
 
     public function delete($id)
     {
-        $listaEmpaques = ListaEmpaques::findOrFail($id);
-        $listaEmpaques->delete(); 
+        $listaEmpaques = ListaEmpaques::with(['empaques'])->findOrFail($id);
+    
+        foreach ($listaEmpaques->empaques as $empaque) {
+            $empaque->delete(); // Esto usará soft delete
+        }
+
+        $listaEmpaques->delete();
+
 
         return redirect()->route('home')->with('success', 'Lista de empaques eliminada correctamente.');
     }

@@ -1,4 +1,4 @@
-<div class="header bg-gradient-primary py-7 py-lg-8">
+<div class="header bg-gradient-secondary py-5">
     
   
 </div>

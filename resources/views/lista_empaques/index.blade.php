@@ -9,89 +9,21 @@
 
 <div class="container-fluid mt--9">
 
-    <div class="row">
-        <div class="col">
-            <div class="card shadow">
-                <div class="card-header border-0">
-                    <div class="row align-items-center">
-                        <div class="col-8">
-                            <h3 class="mb-0">Buscar lista de empaques</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                </div>
-
-                <div class="card-footer py-4">
-                    <div class="d-flex align-items-center m-1" aria-label="...">
-                        <div class="d-flex align-items-center m-1" aria-label="...">
-                            <!-- Label más pequeño -->
-                            <label for="codigo" class="mr-2 mb-0 small">Código lista empaque</label>
-                            
-                            <!-- Input más pequeño -->
-                            <div class="col-auto">
-                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="20JA-02">
-                            </div>
-                        </div>
-
-                        <div class="d-flex align-items-center m-1" aria-label="...">
-                            <!-- Label más pequeño -->
-                            <label for="OC_Factura" class="mr-2 mb-0 small">OC/Factura</label>
-                            
-                            <!-- Input más pequeño -->
-                            <div class="col-auto">
-                                <input type="text" class="form-control form-control-sm" id="OC_Factura" placeholder="100">
-                            </div>
-                        </div>
-
-                        <div class="d-flex align-items-center m-1" aria-label="...">
-                            <!-- Label más pequeño -->
-                            <label for="codigo" class="mr-2 mb-0 small">Proveedor</label>
-                            
-                            <!-- Input más pequeño -->
-                            <div class="col-auto">
-                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="VODAFAST">
-                            </div>
-                        </div>
-
-                        <div class="d-flex align-items-center m-1" aria-label="...">
-                            <!-- Label más pequeño -->
-                            <label for="codigo" class="mr-2 mb-0 small">Fecha ingreso</label>
-                            
-                            <!-- Input más pequeño -->
-                            <div class="col-auto">
-                                <input type="text" class="form-control form-control-sm" id="codigo" placeholder="10-03-2024">
-                            </div>
-                        </div>
-                        <!-- <button class="btn btn-icon btn-2 btn-primary" type="button" onClick="modalRegistrarPackingList()">
-                            Nuevo
-                        </button>-->
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registrarPackingList" onClick="modalRegistrarPackingList()">
-                            Nuevo
-                        </button>
-                    </div>
-                </div>
-
-
-
-            </div>
-        </div>
-    </div>
-    <div class="row mb-4"></div>
 
     <div class="row">
         <div class="col">
             <div class="card shadow">
                 <div class="card-header border-0">
                     <div class="row align-items-center">
-                        <div class="col-8">
+                        <div class="col-8 ">
                             <h3 class="mb-0">Lista de empaques</h3>
                         </div>
                     </div>
                     <div class="row ">
                         <div class="col-3">
-                            
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registrarPackingList" onClick="modalRegistrarPackingList()">
+                                Nuevo
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -235,6 +167,28 @@
                                         <input type="text" name="factura" id="input-factura" class="form-control form-control-alternative" placeholder="0" required>
                                     </div>
 
+                                    <!-- Transporte -->
+                                    <div class="form-group">
+                                        <label for="input-transporte" class="form-control-label">Transporte</label>
+                                        <input type="text" name="transporte" id="input-transporte" class="form-control form-control-alternative" placeholder="">
+                                    </div>
+
+                                    <!-- Aduana - Canal de ingreso -->
+                                    <div class="form-group">
+                                        <label for="input-transporte" class="form-control-label">Aduana - Canal de ingreso</label>
+                                        <div class="row pl-2">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="customRadioInline1" name="canal_aduana" value="verde" class="custom-control-input" required>
+                                                <label class="custom-control-label" for="customRadioInline1">Canal Verde</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="customRadioInline2" name="canal_aduana" value="rojo" class="custom-control-input" required>
+                                                <label class="custom-control-label" for="customRadioInline2">Canal Rojo</label>
+                                            </div>
+                                            <div class="invalid-feedback">Por favor, selecciona un canal.</div>
+                                        </div>   
+                                    </div>
+
                                     <!-- ProveedorId -->
                                     <div class="form-group">
                                         <label for="input-proveedor" class="form-control-label">Proveedor</label>
@@ -297,7 +251,7 @@
             $('#editarPackingList').empty();
 
             var lista = $(elemento).data('lista');
-            console.log('itemID::::', lista.id);
+            console.log('itemID::::', lista.canal_aduana);
             var contenidoModal = 
                 `<div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
@@ -323,6 +277,30 @@
                                         <label for="input-factura" class="form-control-label">OC/Factura</label>
                                         <input type="text" name="factura" id="input-factura" class="form-control form-control-alternative" value="${lista.factura}" required>
                                     </div>
+
+                                    <!-- Transporte -->
+                                    <div class="form-group">
+                                        <label for="input-transporte" class="form-control-label">Transporte</label>
+                                        <input type="text" name="transporte" id="input-transporte" class="form-control form-control-alternative" value="${lista.transporte?? '' }" placeholder="">
+                                    </div>
+
+                                    <!-- Aduana - Canal de ingreso -->
+                                    <div class="form-group">
+                                        <label for="input-transporte" class="form-control-label">Aduana - Canal de ingreso</label>
+                                        <div class="row pl-2">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="canalVerde" name="canal_aduana" value="verde" class="custom-control-input" ${lista.canal_aduana == "verde" ? 'checked' : '' }>
+                                                <label class="custom-control-label" for="canalVerde">Canal Verde</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="canalRojo" name="canal_aduana" value="rojo" class="custom-control-input"  ${lista.canal_aduana == "rojo" ? "checked" : '' }>
+                                                <label class="custom-control-label" for="canalRojo">Canal Rojo</label>
+                                            </div>
+                                            <div class="invalid-feedback">Por favor, selecciona un canal.</div>
+                                        </div>
+                                    </div>
+
+
 
                                     <!-- Proveedor -->
                                     <div class="form-group">

@@ -59,10 +59,34 @@ class DatabaseSeeder extends Seeder
            'empresa_id' => $empresa->id
        ]);
 
-        $proveedor = Proveedor::create([
-            'nombre' => 'VODAFAST',
-            'empresa_id' => $empresa->id
-        ]);
+       $proveedores = [
+            ['codigo_erp' => 4003, 'nombre' => 'LOUIS DELIUS'],
+            ['codigo_erp' => 4004, 'nombre' => 'HAINING HISENER'],
+            ['codigo_erp' => 4005, 'nombre' => 'EUROBIT'],
+            ['codigo_erp' => 4006, 'nombre' => 'BIG IMPORTACIONES LTDA.'],
+            ['codigo_erp' => 4009, 'nombre' => 'PANASIAN FASTENERS INC'],
+            ['codigo_erp' => 4010, 'nombre' => 'APEX TOOL'],
+            ['codigo_erp' => 4012, 'nombre' => 'JIAXING VODAFAST'],
+            ['codigo_erp' => 4013, 'nombre' => 'AMASPRO INC.'],
+            ['codigo_erp' => 4015, 'nombre' => 'FORTLEV'],
+            ['codigo_erp' => 4025, 'nombre' => 'VIQUA'],
+            ['codigo_erp' => 4028, 'nombre' => 'SHANGHAI MINMETALS LTD.'],
+            ['codigo_erp' => 4050, 'nombre' => 'METISA'],
+            ['codigo_erp' => 4065, 'nombre' => 'CIA INDUSTRIAL H.CARLOS SCHNEIDER'],
+            ['codigo_erp' => 4080, 'nombre' => 'KRONA'],
+            ['codigo_erp' => 4081, 'nombre' => 'MUNDO CORPORATION'],
+            ['codigo_erp' => 4119, 'nombre' => 'CISER FASTENER'],
+            ['codigo_erp' => 4405, 'nombre' => 'METALURGICA FEY LTDA'],
+        ];
+        
+        foreach ($proveedores as $proveedorData) {
+            Proveedor::create([
+                'codigo_erp' => $proveedorData['codigo_erp'],
+                'nombre' => $proveedorData['nombre'],
+                'empresa_id' => $empresa->id
+            ]);
+        }
+        
 
         $almacen1 = Almacen::create([
             'nombre' => 'almacen temporal',
@@ -76,45 +100,53 @@ class DatabaseSeeder extends Seeder
             'empresa_id' => $empresa->id
         ]);
 
-        $ubicacion_almacen1_2 = UbicacionAlmacen::create([
-            'nombre' => 'B',
-            'almacen_id' => $almacen1->id,
-            'empresa_id' => $empresa->id
-        ]);
-
-        $almacen2 = Almacen::create([
-            'nombre' => 'almacen Norte',
-            'empresa_id' => $empresa->id,
-            'descripcion_direccion' => 'av Beni'
-        ]);
-
-        $ubicacion_almacen2_1 = UbicacionAlmacen::create([
-            'nombre' => 'A',
-            'almacen_id' => $almacen2->id,
-            'empresa_id' => $empresa->id
-        ]);
-
-        $ubicacion_almacen2_2 = UbicacionAlmacen::create([
-            'nombre' => 'B',
-            'almacen_id' => $almacen2->id,
-            'empresa_id' => $empresa->id
-        ]);
-
-        $ubicacion_almacen2_3 = UbicacionAlmacen::create([
-            'nombre' => 'C',
-            'almacen_id' => $almacen2->id,
-            'empresa_id' => $empresa->id
-        ]);
+        
+        $almacenes = [
+            [
+                'nombre' => 'Pilat Izquierdo',
+                'descripcion_direccion' => 'Pilat',
+                'lugares' => ['A-1', 'A-2', 'A-3', 'A-4', 'A-5', 'A-6', 'A-7', 'A-8', 'A-9', 'A-10', 'B', 'C', 'F1']
+            ],
+            [
+                'nombre' => 'Pilat Derecho',
+                'descripcion_direccion' => 'Pilat',
+                'lugares' => ['D-1', 'D-2', 'D-3', 'D-4', 'D-5', 'D-6', 'D-7', 'D-8', 'E-1', 'E-2', 'E-3', 'E-4', 'E-5', 'E-6', 'E-7', 'E-8', 'E-9', 'E-10', 'F2']
+            ],
+            [
+                'nombre' => 'Transito',
+                'descripcion_direccion' => 'Parque industrial',
+                'lugares' => ['T']
+            ]
+        ];
+        
+        foreach ($almacenes as $almacenData) {
+            $almacen = Almacen::create([
+                'nombre' => $almacenData['nombre'],
+                'empresa_id' => $empresa->id,
+                'descripcion_direccion' => $almacenData['descripcion_direccion']
+            ]);
+        
+            foreach ($almacenData['lugares'] as $lugar) {
+                UbicacionAlmacen::create([
+                    'nombre' => $lugar,
+                    'almacen_id' => $almacen->id,
+                    'empresa_id' => $empresa->id
+                ]);
+            }
+        }
+        
 
         $listaEmpaques1 = ListaEmpaques::create([
             'codigo' => '20JA-02',
             'factura' => '12345678',
-            'proveedor_id' => $proveedor->id,
+            'proveedor_id' => 1,
+            'canal_aduana' => 'verde',
             'stock_esperado' => 22,
             'almacen_id' => $almacen1->id,
             'fecha_recepcion' => now(),
             'fecha_llegada' => now(),
             'fecha_creacion' => now(),
+            'transporte' => 'camioneta placa:ABC-2515',
             'encargado_id' => $trabajador->id,
             'empresa_id' => $empresa->id
         ]);
@@ -151,7 +183,7 @@ class DatabaseSeeder extends Seeder
             'lista_empaques_id'=> $listaEmpaques1->id,
             'fecha_registro' => now(),
             'encargado_id' => $trabajador->id ,
-            'ubicacion_almacen_id' => $ubicacion_almacen1_2->id,
+            'ubicacion_almacen_id' => $ubicacion_almacen1_1->id,
             'criterio1'=>true,
             'criterio2'=>true,
             'criterio3'=>true,

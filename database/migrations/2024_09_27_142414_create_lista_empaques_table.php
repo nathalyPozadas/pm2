@@ -23,6 +23,8 @@ return new class extends Migration
             $table->integer('stock_actual')->default(0);
             $table->date('fecha_recepcion');
             $table->date('fecha_llegada');
+            $table->string('transporte')->nullable();
+            $table->string(  'canal_aduana');
             $table->unsignedBigInteger('almacen_id');
             $table->date('fecha_creacion');
             $table->unsignedBigInteger('encargado_id');

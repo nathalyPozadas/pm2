@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('proveedor', function (Blueprint $table) {
             $table->id();
+            $table->integer('codigo_erp');
             $table->string('nombre');
             $table->unsignedBigInteger('empresa_id');
             $table->softDeletes();

@@ -13,7 +13,7 @@ class ListaEmpaquesRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
         //return true;
     }
 
@@ -26,6 +26,8 @@ class ListaEmpaquesRequest extends FormRequest
     {
         return [
             'codigo' => 'required',
+            'canal_aduana' => 'required',
+            'transporte' => 'nullable|string',
             'factura' => 'required',
             'proveedor_id' => 'required|exists:proveedor,id',
             'fecha_recepcion' => 'required|date',

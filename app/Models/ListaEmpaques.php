@@ -16,12 +16,14 @@ class ListaEmpaques extends Model
     protected $fillable = [
         'codigo',
         'factura',
+        'canal_aduana',
         'proveedor_id',
         'stock_esperado',
         'stock_registrado',
         'stock_actual',
         'fecha_recepcion',
         'fecha_llegada',
+        'transporte',
         'almacen_id',
         'encargado_id',
         'empresa_id'

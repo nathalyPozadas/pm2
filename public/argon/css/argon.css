@@ -7934,7 +7934,7 @@ button.close
 
 .bg-primary
 {
-    background-color: #5e72e4 !important;
+    background-color: #3b5998 !important;
 }
 
 a.bg-primary:hover,
@@ -14460,6 +14460,13 @@ button.bg-darker:focus
 .text-center
 {
     text-align: center !important;
+}
+
+.text-center-login
+{
+    font-size: 1.5rem !important;
+    text-align: center !important;
+    color: white !important;
 }
 
 @media (min-width: 576px)
