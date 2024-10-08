@@ -33,10 +33,27 @@
                 <i class="fas fa-sitemap text-primary"></i> {{ __(key: 'Empresa') }}
             </a>
         </li> 
+
         <li class="nav-item">
-            <a class="nav-link" href="#">
-                <i class="far fa-file-alt text-primary"></i> {{ __(key: 'Reportes') }}
-            </a>
-        </li> 
+                <a class="nav-link active" href="#navbar-examples2" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-examples2">
+                    <i class="far fa-file-alt text-primary" style="color: #f4645f;"></i>
+                    <span class="nav-link-text" >{{ __('Reportes') }}</span>
+                </a>
+
+                <div class="collapse " id="navbar-examples2">
+                    <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route( 'reporte.listas')}}">
+                                    {{ __('Reporte de listas') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    {{ __('Reporte detallado') }}
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </li>
                
 </ul>

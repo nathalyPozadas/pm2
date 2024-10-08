@@ -59,12 +59,13 @@
                                                 <span class="btn-inner--icon"><i class="far fa-edit"></i></span>
                                             </button>
                                         </a>
-
-                                        <a href="#">
-                                            <button class="btn btn-icon btn-2 btn-primary" type="button" onclick="modalEliminarPackingList(this)" data-codigo="{{ json_encode($lista) }}">
-                                                <span class="btn-inner--icon"><i class="fas fa-times-circle"></i></span>
-                                            </button>
-                                        </a>
+                                        @if(!$lista->tiene_movimientos)
+                                            <a>
+                                                <button class="btn btn-icon btn-2 btn-primary" type="button" onclick="modalEliminarPackingList(this)" data-codigo="{{ json_encode($lista) }}">
+                                                    <span class="btn-inner--icon"><i class="fas fa-times-circle"></i></span>
+                                                </button>
+                                            </a>
+                                        @endif
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#registrarEmpaque" onClick="modalRegistrarEmpaque({{$lista->id}})">
                     
                                             <span class="btn-inner--icon"><i class="far fa-list-alt"></i></span>

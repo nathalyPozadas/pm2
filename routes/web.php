@@ -48,7 +48,8 @@ Route::group(['middleware' => 'auth'], function () {
     //PERSONAL
     
     //REPORTES
-
+        Route::get('/reporte_listas', ['as' => 'reporte.listas', 'uses' => 'App\Http\Controllers\ReportesController@reporteListas_index']);
+        Route::post('/reporte_listas', ['as' => 'reporte.listas', 'uses' => 'App\Http\Controllers\ReportesController@reporteListas']);
 });
 
 

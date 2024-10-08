@@ -40,7 +40,6 @@
                                 <th scope="col">Lista de Empaque</th>
                                 <th scope="col">Tipo</th>
                                 <th scope="col">Descripcion</th>
-                                <th scope="col">Estado</th>
                                 <th scope="col">Almacen</th>
                                 <th scope="col">Lugar</th>
                                 <th scope="col"></th>
@@ -49,29 +48,31 @@
                         <tbody>
                             @foreach ($empaques as $empaque)
                                 <tr>
-                                    <td><span class="badge badge-dot mr-4">
-                                    <i class="@if($empaque->estado == 'dañado') bg-danger @elseif($empaque->estado == 'correcto') bg-success @elseif($empaque->estado == 'mermado') bg-info @endif"></i>
+                                    <td><span class="badge badge-dot-lg mr-4">
+                                    <i class="@if($empaque->estado == 'dañado') bg-danger @elseif($empaque->estado == 'correcto') bg-success @elseif($empaque->estado == 'mermado') bg-warning @endif"></i>
                                         </span>{{$empaque->id}}</td>
                                     <td>{{$empaque->empaque_lista_empaque_codigo}}</td>
                                     <td style="text-transform: uppercase;">{{$empaque->tipo}}</td>
                                     <td>{{ $empaque->descripcion}}</td>
-
-                                    <td>{{$empaque->estado}}</td>
                                     <td>{{$empaque->empaque_almacen_nombre}}</td>
                                     <td>{{$empaque->empaque_ubicacion_nombre}}</td>
                                     <td>
                                         @if($empaque->ubicacion_almacen_id !== null)
                                             <a>
-                                                <button class="btn btn-icon btn-2 btn-primary" type="button" onclick="modalEditarEmpaque(this)" data-lista="{{ json_encode($empaque) }}">
+                                                <button class="btn btn-icon btn-2 btn-primary" type="button" onclick="modalEditarEmpaque({{ json_encode($empaque) }})" >
                                                     <span class="btn-inner--icon"><i class="far fa-edit"></i></span>
                                                 </button>
                                             </a>
 
-                                            <a href="#">
-                                                <button class="btn btn-icon btn-2 btn-primary" type="button" onclick="modalEliminarEmpaque(this)" data-codigo="{{ json_encode($empaque) }}">
-                                                    <span class="btn-inner--icon"><i class="fas fa-times-circle"></i></span>
-                                                </button>
+                                            <a>
+                                                @if($empaque->tiene_movimientos== false)
+                                                    <button class="btn btn-icon btn-2 btn-primary" type="button" onclick="modalEliminarEmpaque({{ json_encode($empaque) }})">
+                                                        <span class="btn-inner--icon"><i class="fas fa-times-circle"></i></span>
+                                                    </button>
+                                                @endif
                                             </a>
+
+
                                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#moverEmpaque" onClick="modalMoverEmpaque({{$empaque->id}})" >
                                                     <span class="btn-inner--icon"><i class="fas fa-sign-out-alt"></i></span>
                                             </button>
@@ -213,10 +214,10 @@
                                         </select>
                                     </div>
 
-                                    <!-- Observacion -->
+                                    <!-- Observacion estado -->
                                     <div class="form-group">
-                                        <label for="input-observacion" class="form-control-label">Observación</label>
-                                        <input type="text" name="observacion" id="input-observacion" class="form-control form-control-alternative" placeholder="" >
+                                        <label for="input-observacion_estado" class="form-control-label">Observación</label>
+                                        <input type="text" name="observacion_estado" id="input-observacion_estado" class="form-control form-control-alternative" placeholder="" >
                                     </div>
                             
                                     <!-- Almacen -->
@@ -304,38 +305,109 @@
                 cantidadCajasGroup.style.display = 'block'; // Mostrar si es "Pallet"
             } else {
                 cantidadCajasGroup.style.display = 'none'; // Ocultar en otros casos
+                cantidad_cajas = document.getElementById('input-cantidad_cajas');
+                cantidad_cajas.value = '';
             }
         }
 
 
 
-        function modalEditarEmpaque(elemento) {
-            
+        function modalEditarEmpaque(empaque) {
+            console.log('empaque___',this.empaque);
             $('#editarEmpaque').empty();
 
-            var lista = $(elemento).data('lista');
-            console.log('itemID::::', lista.id);
             var contenidoModal = 
                 `<div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Editar Empaques</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Editar Empaque</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                            
+                            <form id="formEditarEmpaque" method="POST" action="/empaque/${empaque.id}/update">
+                                    @csrf
+                                    @method('post')
                             <div class="modal-body">
-                                
+                                        <input type="text" name="vista" id="vista" value="vista_empaques" class="form-control form-control-alternative d-none" >
+
+                                    <!-- Tipo de empaque -->
+                                    <div class="form-group">
+                                        <label for="input-tipo" class="form-control-label">Tipo de empaque</label>
+                                        <select name="tipo" id="input-tipo" class="form-control form-control-alternative" required onchange="toggleCantidadCajas()">
+                                            <option value="pallet" ${empaque.tipo == 'pallet' ? 'selected' : '' }>Pallet</option>
+                                            <option value="bolsa" ${empaque.tipo == 'bolsa' ? 'selected' : '' }>Bolsa</option>
+                                            <option value="caja" ${empaque.tipo == 'caja' ? 'selected' : '' }>Caja</option>
+                                        </select>
+
+                                    </div>
+
+                                    <!-- Cantidad de Cajas -->
+                                    <div id="cantidad_cajas_form_group" class="form-group"  "${empaque.tipo != 'pallet' ? 'hide' : '' }" >
+                                        <label for="input-cantidad_cajas" class="form-control-label">Cantidad de cajas</label>
+                                        <input type="number" name="cantidad_cajas" id="input-cantidad_cajas" class="form-control form-control-alternative" placeholder="0" value=${empaque.cantidad_cajas} >
+                                    </div>
+
+                                    <!-- Peso -->
+                                    <div class="form-group" "${empaque.tipo == 'pallet' ? 'hide' : '' }">
+                                        <label for="input-peso" class="form-control-label">Peso</label>
+                                        <input type="number" name="peso" id="input-peso" class="form-control form-control-alternative" placeholder="0" onchange="toggleUnidadMedida()" value=${empaque.peso}>
+                                        <select name="unidad_medida" id="input-unidad_medida" class="form-control form-control-alternative" >
+                                            <option value="" selected >Seleccione</option>
+                                            <option value="kilo" ${empaque.unidad_medida=='kilo'? 'selected': ''}>Kg</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Descripcion -->
+                                    <div class="form-group">
+                                        <label for="input-descripcion" class="form-control-label">Descripción</label>
+                                        <input type="text" name="descripcion" id="input-descripcion" class="form-control form-control-alternative" placeholder="" value="${empaque.descripcion?empaque.descripcion : ''}" >
+                                    </div>
+
+                                    <!-- Estado ingreso -->
+                                    <div class="form-group">
+                                        <label for="input-estado" class="form-control-label">Estado Ingreso</label>
+                                        <select name="estado" id="input-estado" class="form-control form-control-alternative" required>
+                                            <option value="correcto" ${empaque.estado == 'correcto' ? 'selected' : '' } >Correcto</option>
+                                            <option value="mermado" ${empaque.estado == 'mermado' ? 'selected' : '' } >Mermado</option>
+                                            <option value="dañado" ${empaque.estado == 'dañado' ? 'selected' : '' }>Dañado</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Observacion -->
+                                    <div class="form-group">
+                                        <label for="input-observacion" class="form-control-label">Observación</label>
+                                        <input type="text" name="observacion_estado" id="input-observacion" class="form-control form-control-alternative" placeholder="" value=${empaque.observacion_estado ? empaque.observacion_estado: ''}>
+                                    </div>
+                            
+                                    <!-- Criterio 1 -->
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="criterio1" name="criterio1" 
+                                            ${empaque.criterio1 ? 'checked' : '' }>
+                                        <label class="custom-control-label" for="criterio1">Criterio 1</label>
+                                    </div>
+
+
+                                    <!-- Criterio 2 -->
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="criterio2" name="criterio2"
+                                            ${empaque.criterio2 ? 'checked' : '' }>
+                                        <label class="custom-control-label" for="criterio2">Criterio 2</label>
+                                    </div>
+
+                                    <!-- Criterio 3 -->
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="criterio3" name="criterio3"
+                                            ${empaque.criterio3 ? 'checked' : '' } >
+                                        <label class="custom-control-label" for="criterio3">Criterio 2</label>
+                                    </div>
                                  
-                                    
-                                
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 <button type="submit" class="btn btn-primary">Guardar cambios</button>
                             </div>
-
+                        </form>
                     </div>
                 </div>`;
 
@@ -346,27 +418,23 @@
                 $('#editarEmpaque').modal('show');
         }
 
-        function modalEliminarPackingList(elemento) {
-            $('#eliminarPackingList').empty();
-
-            /*
-            var lista = $(elemento).data('codigo');
-
+        function modalEliminarEmpaque(empaque) {
+            $('#eliminarEmpaque').empty();
             var contenidoModal = 
                 `<div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Eliminar Lista de Empaques</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Eliminar Empaque</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>¿Está seguro de que desea eliminar la lista de empaques con código ${lista.codigo}?</p>
+                            <p>¿Está seguro de que desea eliminar el empaque NRO. ${empaque.numero} de la lista de empaque ${empaque.empaque_lista_empaque_codigo}?</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <form method="POST" action="/lista_empaques/${lista.id}/delete">
+                            <form method="POST" action="/empaque/${empaque.id}/delete">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Eliminar</button>
@@ -375,9 +443,8 @@
                     </div>
                 </div>`;
             
-            $('#eliminarPackingList').html(contenidoModal);
-            */
-            $('#eliminarPackingList').modal('show');
+            $('#eliminarEmpaque').html(contenidoModal);
+            $('#eliminarEmpaque').modal('show');
         }
 
         function modalMoverEmpaque(empaque_id){

@@ -28,4 +28,5 @@ class ListaEmpaques extends Model
         'encargado_id',
         'empresa_id'
     ];
+
 }

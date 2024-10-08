@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ListaEmpaquesRequest;
 use App\Models\Almacen;
+use App\Models\Empaque;
 use App\Models\Empresa;
 use App\Models\ListaEmpaques;
+use App\Models\Movimiento;
 use App\Models\Proveedor;
 use App\Models\UbicacionAlmacen;
 use Illuminate\Http\Request;
@@ -14,16 +16,19 @@ class ListaEmpaquesController extends Controller
 {
     public function index()
     {
-        //$empresa_id = obtener_empresa();
         $listas = ListaEmpaques::join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
         ->select('lista_empaques.*', 'proveedor.nombre as proveedor_nombre')
         ->orderBy('lista_empaques.id', 'desc')
         ->get();
-        $empresa = Empresa::find(1);
+
+        foreach($listas as $lista){
+            $lista->tiene_movimientos = $this->tieneMovimientos($lista->id);
+        }
+        
+        $empresa = Empresa::find(auth()->user()->empresa_id);
         $icono_empresa = $empresa->icono;
 
         $proveedores = Proveedor::where('empresa_id', 1)->orderBy('nombre')->get();
-        //$almacenes = Almacen::where('empresa_id', 1)->orderBy('nombre')->get();
         
         $almacenes = Almacen::orderBy('nombre')->get();
         foreach($almacenes as $almacen){
@@ -53,7 +58,6 @@ class ListaEmpaquesController extends Controller
         $listaEmpaques->almacen_id = $request->almacen_id;
         $listaEmpaques->save();
 
-        // Redirigir con un mensaje de éxito
         return redirect()->route('home');
     }
 
@@ -77,15 +81,33 @@ class ListaEmpaquesController extends Controller
 
     public function delete($id)
     {
-        $listaEmpaques = ListaEmpaques::with(['empaques'])->findOrFail($id);
-    
-        foreach ($listaEmpaques->empaques as $empaque) {
-            $empaque->delete(); // Esto usará soft delete
+        $listaEmpaques = Empaque::where('lista_empaques_id',$id)->get();
+        $tiene_movimientos = $this->tieneMovimientos($id);
+        if($tiene_movimientos == false){
+            foreach ($listaEmpaques as $empaque) {
+                $empaque->delete(); 
+            }
+            $lista = ListaEmpaques::find($id);
+            $lista->delete();
+        }
+        
+        return redirect()->route('home')->with('success', 'Lista de empaques eliminada correctamente.');
+    }
+
+
+    private function tieneMovimientos($lista_empaques_id){
+
+        $resultado = false;
+
+        $listaEmpaques = Empaque::where('lista_empaques_id',$lista_empaques_id)->get();
+        foreach ($listaEmpaques as $empaque) {
+            $movimientos = Movimiento::where('empaque_id', $empaque->id)->count();
+            if($movimientos !== null && $movimientos > 1){
+                $resultado = true;
+                break;
+            }
         }
 
-        $listaEmpaques->delete();
-
-
-        return redirect()->route('home')->with('success', 'Lista de empaques eliminada correctamente.');
+        return $resultado;
     }
 }

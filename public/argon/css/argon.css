@@ -16821,6 +16821,18 @@ a.text-lighter:focus
 
     border-radius: 50%;
 }
+.badge-dot-lg i
+{
+    display: inline-block;
+
+    width: 1rem;
+    height: 1rem;
+    margin-right: .375rem; 
+
+    vertical-align: middle;
+
+    border-radius: 50%;
+}
 .badge-dot.badge-md i
 {
     width: .5rem;
