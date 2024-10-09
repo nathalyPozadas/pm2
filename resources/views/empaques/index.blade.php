@@ -219,25 +219,7 @@
                                         <label for="input-observacion_estado" class="form-control-label">Observación</label>
                                         <input type="text" name="observacion_estado" id="input-observacion_estado" class="form-control form-control-alternative" placeholder="" >
                                     </div>
-                            
-                                    <!-- Almacen -->
-                                    <div class="form-group">
-                                        <label for="input-almacen_id" class="form-control-label">Almacen</label>
-                                        <select name="almacen_id" id="input-almacen_id" class="form-control form-control-alternative" required onchange="cargarUbicaciones(this)">
-                                            <option value="" selected >Seleccione un almacen</option>
-                                            @foreach($almacenes as $almacen)
-                                                <option value="{{$almacen->id}}" data-ubicaciones='@json($almacen->ubicaciones)'>{{$almacen->nombre}}</option>
-                                            @endforeach
-                                        </select>
-
-                                    </div>
-                                    <!-- Lugar -->
-                                    <div class="form-group">
-                                        <label for="input-ubicacion_almacen_id" class="form-control-label">Lugar</label>
-                                        <select name="ubicacion_almacen_id" id="input-ubicacion_almacen_id" class="form-control form-control-alternative" required>
-                                        </select>
-                                    </div>
-
+                                
                                     <!-- Criterio 1 -->
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" class="custom-control-input" id="criterio1" name="criterio1">

@@ -70,7 +70,7 @@
                     
                                             <span class="btn-inner--icon"><i class="far fa-list-alt"></i></span>
                                         </button>
-                                        <a href="#">
+                                        <a href="{{ route( 'lista_empaques.show',['id'=>$lista->id ]) }}">
                                             <button class="btn btn-icon btn-2 btn-primary" type="button" >
                                                 <span class="btn-inner--icon"><i class="fas fa-search"></i></span>
                                             </button>
@@ -220,18 +220,6 @@
                                         <input type="number" name="stock_esperado" id="input-stock-llegada" class="form-control form-control-alternative" placeholder="0" required>
                                     </div>
 
-                                    <!-- AlmacenId -->
-                                    <div class="form-group">
-                                        <label for="input-almacen" class="form-control-label">Almacén</label>
-                                        <select name="almacen_id" id="input-almacen" class="form-control form-control-alternative">
-                                            <option value="Temporal">Temporal</option>
-                                            @foreach($almacenes as $almacen)
-                                                <option value="{{ $almacen->id }}">{{ $almacen->nombre }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -331,16 +319,6 @@
                                         <label for="input-stock-llegada" class="form-control-label">Stock empaques esperados</label>
                                         <input type="number" name="stock_esperado" id="input-stock-llegada" class="form-control form-control-alternative" value="${lista.stock_esperado}" required>
                                     </div>
-
-                                    <!-- Almacén -->
-                                    <div class="form-group">
-                                        <label for="input-almacen" class="form-control-label">Almacén</label>
-                                        <select name="almacen_id" id="input-almacen" class="form-control form-control-alternative">
-                                            @foreach($almacenes as $almacen)
-                                                <option value="{{ $almacen->id }}" ${lista.almacen_id == {{ $almacen->id }} ? 'selected' : ''}>{{ $almacen->nombre }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
                                 
                             </div>
                             <div class="modal-footer">
@@ -373,7 +351,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>¿Está seguro de que desea eliminar la lista de empaques con código ${lista.codigo}?</p>
+                            <p>¿Está seguro de que desea eliminar la lista de empaques con código ${lista.codigo}? <br> Esta lista cuenta con ${lista.stock_registrado} empaques registrados, estos tambien serán eliminados.</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>

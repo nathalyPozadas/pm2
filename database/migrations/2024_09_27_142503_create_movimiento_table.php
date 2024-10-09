@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('empaque_id');
             $table->date('fecha');
             $table->time('hora');
-            $table->string('tipo_movimiento'); //ingreso, movimiento entre almacenes, dentro del mismo almacen, salida
+            $table->string('tipo_movimiento'); //'interno' ,'externo'
             $table->unsignedBigInteger('ubicacion_origen_id')->nullable();
             $table->unsignedBigInteger('ubicacion_destino_id')->nullable();
             $table->string('nota')->nullable();

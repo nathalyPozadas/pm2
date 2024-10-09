@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EditEmpaqueRequest;
 use App\Http\Requests\EmpaqueRequest;
 use App\Models\Almacen;
+use App\Models\Configuracion;
 use App\Models\Empaque;
 use App\Models\Empresa;
 use App\Models\ListaEmpaques;
@@ -70,7 +71,6 @@ class EmpaqueController extends Controller
         $empaque->lista_empaques_id = $request->lista_empaques_id;
         $empaque->fecha_registro = now();
         $empaque->encargado_id = auth()->user()->trabajador_id;
-        $empaque->ubicacion_almacen_id = $request->ubicacion_almacen_id;
         $empaque->criterio1 = $request->has('criterio1') ? true : false;
         $empaque->criterio2 = $request->has('criterio2') ? true : false;
         $empaque->criterio3 = $request->has('criterio3') ? true : false;
@@ -82,6 +82,20 @@ class EmpaqueController extends Controller
         $lista_empaques->stock_actual = $lista_empaques->stock_actual + 1;
         $lista_empaques->update();
 
+        $configuracion = Configuracion::where('empresa_id',auth()->user()->empresa_id)->first();
+        $movimiento = new Movimiento();
+        $movimiento->empaque_id = $empaque->id;
+        $movimiento->fecha = now();
+        $movimiento->hora = date('H:i:s');
+        $movimiento->tipo_movimiento = 'interno';
+        $movimiento->ubicacion_destino_id = $configuracion->ubicacion_default;
+        $movimiento->encargado_id = auth()->user()->trabajador_id;
+        $movimiento->empresa_id = auth()->user()->empresa_id;
+        $movimiento->save();
+
+        $empaque->ubicacion_almacen_id =  $movimiento->ubicacion_destino_id ;
+        $empaque->update();
+        
         if($request->vista == 'vista_empaques'){
             return redirect()->route('empaque.index');
         }

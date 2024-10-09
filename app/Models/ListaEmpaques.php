@@ -25,7 +25,6 @@ class ListaEmpaques extends Model
         'fecha_llegada',
         'transporte',
         'almacen_id',
-        'encargado_id',
         'empresa_id'
     ];
 

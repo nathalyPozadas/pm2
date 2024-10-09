@@ -60,14 +60,14 @@
                         <thead class="thead-light">
                             <tr>
                                 <th scope="col">N°</th>
-                                <th scope="col">Lista de Empaque</th>
+                                <th scope="col">Lista Empaque</th>
                                 <th scope="col">OC/Factura</th>
                                 <th scope="col">Proveedor</th>
                                 <th scope="col">Fecha Recepción</th>
-                                <th scope="col">Fecha Llegada</th>
-                                <th scope="col">Stock Esperado</th>
-                                <th scope="col">Stock Registrado</th>
-                                <th scope="col">Stock Actual</th>
+                                <th scope="col">Cantidad Empaques</th>
+                                <th scope="col">Ingreso</th>
+                                <th scope="col">Egreso</th>
+                                <th scope="col">Saldo</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -167,9 +167,9 @@
                                     '<td>' + lista.factura  + '</td>' +
                                     '<td>' + lista.proveedor_nombre  + '</td>' +
                                     '<td>' + lista.fecha_recepcion  + '</td>' +
-                                    '<td>' + lista.fecha_llegada  + '</td>' +
                                     '<td>' + lista.stock_esperado  + '</td>' +
                                     '<td>' + lista.stock_registrado  + '</td>' +
+                                    '<td>' + lista.stock_registrado -  lista.stock_actual + '</td>' +
                                     '<td>' + lista.stock_actual  + '</td>' +
                                     '</tr>';
 

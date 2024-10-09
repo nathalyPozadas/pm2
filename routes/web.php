@@ -32,6 +32,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/home', 'App\Http\Controllers\ListaEmpaquesController@index')->name('home');
 
         Route::get('/lista_empaques', ['as' => 'lista_empaques.index', 'uses' => 'App\Http\Controllers\ListaEmpaquesController@index']);
+        Route::get('/lista_empaques/{id}/show', ['as' => 'lista_empaques.show', 'uses' => 'App\Http\Controllers\ListaEmpaquesController@show']);
         Route::post('/lista_empaques/store', ['as' => 'lista_empaques.store', 'uses' => 'App\Http\Controllers\ListaEmpaquesController@store']);
         Route::post('/lista_empaques/{id}/update', ['as' => 'lista_empaques.update', 'uses' => 'App\Http\Controllers\ListaEmpaquesController@update']);
         Route::delete('/lista_empaques/{id}/delete', ['as' => 'lista_empaques.delete', 'uses' => 'App\Http\Controllers\ListaEmpaquesController@delete']);

@@ -37,7 +37,30 @@ class ListaEmpaquesController extends Controller
             ->get();
         }
 
-        return view("lista_empaques.index", ['listas'=>$listas, 'icono_empresa'=>$icono_empresa, 'proveedores'=>$proveedores, 'almacenes'=>$almacenes ]);
+        return view("lista_empaques.index", ['listas'=>$listas, 'icono_empresa'=>$icono_empresa, 'proveedores'=>$proveedores , 'almacenes'=>$almacenes ]);
+    }
+
+    public function show($id)
+    {
+        $lista = ListaEmpaques::where('lista_empaques.id', $id)
+        ->join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
+        ->select('lista_empaques.*', 'proveedor.nombre as proveedor_nombre')
+        ->first(); 
+
+        $lista->empaques =  Empaque::where('empaque.lista_empaques_id', $id)
+            ->join('lista_empaques', 'empaque.lista_empaques_id', '=', 'lista_empaques.id')
+            ->join('ubicacion_almacen', 'empaque.ubicacion_almacen_id', '=', 'ubicacion_almacen.id')
+            ->join('almacen', 'ubicacion_almacen.almacen_id', '=', 'almacen.id')
+            ->select('empaque.*', 'lista_empaques.codigo as empaque_lista_empaque_codigo', 'almacen.nombre as empaque_almacen_nombre', 'ubicacion_almacen.nombre as empaque_ubicacion_nombre')
+            ->orderBy('empaque.id', 'desc')
+            ->get();
+        
+        
+        $empresa = Empresa::find(auth()->user()->empresa_id);
+        $icono_empresa = $empresa->icono;
+
+
+        return view("lista_empaques.show", ['lista'=>$lista, 'icono_empresa'=>$icono_empresa  ]);
     }
 
     public function store(ListaEmpaquesRequest $request)
@@ -55,7 +78,6 @@ class ListaEmpaquesController extends Controller
         $listaEmpaques->stock_esperado = $request->stock_esperado;
         $listaEmpaques->encargado_id = auth()->user()->trabajador_id;
         $listaEmpaques->empresa_id = auth()->user()->empresa_id;
-        $listaEmpaques->almacen_id = $request->almacen_id;
         $listaEmpaques->save();
 
         return redirect()->route('home');
@@ -72,7 +94,6 @@ class ListaEmpaquesController extends Controller
         $listaEmpaques->proveedor_id = $request->input('proveedor_id');
         $listaEmpaques->fecha_recepcion = $request->input('fecha_recepcion');
         $listaEmpaques->stock_esperado = $request->input('stock_esperado');
-        $listaEmpaques->almacen_id = $request->input('almacen_id');
         
         $listaEmpaques->update();
 

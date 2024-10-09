@@ -32,8 +32,7 @@ class ListaEmpaquesRequest extends FormRequest
             'proveedor_id' => 'required|exists:proveedor,id',
             'fecha_recepcion' => 'required|date',
             'fecha_llegada' => 'required|date',
-            'stock_esperado' => 'required|integer|min:0',
-            'almacen_id' => 'required|exists:almacen,id',
+            'stock_esperado' => 'required|integer|min:0'
         ];
     }
 }

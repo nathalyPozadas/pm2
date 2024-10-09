@@ -3,9 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Almacen;
+use App\Models\Configuracion;
 use App\Models\Empaque;
 use App\Models\Empresa;
 use App\Models\ListaEmpaques;
+use App\Models\Movimiento;
 use App\Models\Proveedor;
 use App\Models\Trabajador;
 use App\Models\UbicacionAlmacen;
@@ -134,6 +136,11 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+
+        $configuracion = Configuracion::create([
+            'ubicacion_default' => $ubicacion_almacen1_1->id,
+            'empresa_id' => $empresa->id
+        ]);
         
 
         $listaEmpaques1 = ListaEmpaques::create([
@@ -142,7 +149,6 @@ class DatabaseSeeder extends Seeder
             'proveedor_id' => 1,
             'canal_aduana' => 'verde',
             'stock_esperado' => 22,
-            'almacen_id' => $almacen1->id,
             'fecha_recepcion' => now(),
             'fecha_llegada' => now(),
             'fecha_creacion' => now(),
@@ -162,7 +168,7 @@ class DatabaseSeeder extends Seeder
             'lista_empaques_id'=> $listaEmpaques1->id,
             'fecha_registro' => now(),
             'encargado_id' => $trabajador->id ,
-            'ubicacion_almacen_id' => $ubicacion_almacen1_1->id,
+            'ubicacion_almacen_id' => $configuracion->ubicacion_default,
             'criterio1'=>true,
             'criterio2'=>false,
             'criterio3'=>true,
@@ -174,6 +180,16 @@ class DatabaseSeeder extends Seeder
         $listaEmpaques1->stock_actual = $listaEmpaques1->stock_actual+1;
         $listaEmpaques1->update();
 
+        $empaque1_1_mov = Movimiento::create([
+            'empaque_id'=> $empaque1_1->id,
+            'fecha'=>now(),
+            'hora'=>'00:00:00',
+            'tipo_movimiento'=>'interno',
+            'encargado_id' => $trabajador->id ,
+            'ubicacion_destino_id' => $configuracion->ubicacion_default,
+            'empresa_id'=>$empresa->id
+        ]);
+
         $empaque1_2 = Empaque::create([
             'tipo'=>'caja',
             'numero'=>2,
@@ -183,7 +199,7 @@ class DatabaseSeeder extends Seeder
             'lista_empaques_id'=> $listaEmpaques1->id,
             'fecha_registro' => now(),
             'encargado_id' => $trabajador->id ,
-            'ubicacion_almacen_id' => $ubicacion_almacen1_1->id,
+            'ubicacion_almacen_id' => $configuracion->ubicacion_default,
             'criterio1'=>true,
             'criterio2'=>true,
             'criterio3'=>true,
@@ -191,9 +207,22 @@ class DatabaseSeeder extends Seeder
 
         ]);
 
+       
+
         $listaEmpaques1->stock_registrado = $listaEmpaques1->stock_registrado+1;
         $listaEmpaques1->stock_actual = $listaEmpaques1->stock_actual+1;
         $listaEmpaques1->update();
+
+        $empaque1_2_mov = Movimiento::create([
+            'empaque_id'=> $empaque1_2->id,
+            'fecha'=>now(),
+            'hora'=>'00:00:00',
+            'tipo_movimiento'=>'interno',
+            'encargado_id' => $trabajador->id ,
+            'ubicacion_destino_id' => $configuracion->ubicacion_default,
+            'empresa_id'=>$empresa->id
+        ]);
+
 
         
     }

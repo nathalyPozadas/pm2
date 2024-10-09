@@ -25,7 +25,6 @@ return new class extends Migration
             $table->date('fecha_llegada');
             $table->string('transporte')->nullable();
             $table->string(  'canal_aduana');
-            $table->unsignedBigInteger('almacen_id');
             $table->date('fecha_creacion');
             $table->unsignedBigInteger('encargado_id');
             $table->unsignedBigInteger('empresa_id');
@@ -33,7 +32,6 @@ return new class extends Migration
             $table->timestamps();
 
             
-            $table->foreign(columns: 'almacen_id')->references('id')->on('almacen');
             $table->foreign('encargado_id')->references('id')->on('trabajador');
             $table->foreign(columns: 'proveedor_id')->references('id')->on('proveedor');
             $table->foreign('empresa_id')->references('id')->on('empresa');
