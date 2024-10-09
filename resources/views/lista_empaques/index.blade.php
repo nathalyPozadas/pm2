@@ -255,11 +255,8 @@
                                 @method('POST')
                                 <div class="modal-body">
                                 
-                                    <!-- Lista de empaque -->
-                                    <div class="form-group">
-                                        <label for="input-lista-empaque" class="form-control-label">Lista de empaque</label>
-                                        <input type="text" name="codigo" id="input-lista-empaque" class="form-control form-control-alternative" value="${lista.codigo}" required>
-                                    </div>
+                                    <input type="text" name="codigo" id="input-lista-empaque" class="form-control form-control-alternative" value="${lista.codigo}" required hidden>
+                          
 
                                     <!-- OC/Factura -->
                                     <div class="form-group">
