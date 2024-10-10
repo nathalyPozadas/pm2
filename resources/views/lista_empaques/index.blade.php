@@ -439,17 +439,6 @@
                                         <input type="text" name="observacion" id="input-observacion" class="form-control form-control-alternative" placeholder="" >
                                     </div>
                             
-                                    <!-- Almacen -->
-                                    <div class="form-group">
-                                        <label for="input-almacen_id" class="form-control-label">Almacen</label>
-                                        <select name="almacen_id" id="input-almacen_id" class="form-control form-control-alternative" required onchange="cargarUbicaciones(this)">
-                                            <option value="" selected >Seleccione un almacen</option>
-                                            @foreach($almacenes as $almacen)
-                                                <option value="{{$almacen->id}}" data-ubicaciones='@json($almacen->ubicaciones)'>{{$almacen->nombre}}</option>
-                                            @endforeach
-                                        </select>
-
-                                    </div>
                                     <!-- Lugar -->
                                     <div class="form-group">
                                         <label for="input-ubicacion_almacen_id" class="form-control-label">Lugar</label>

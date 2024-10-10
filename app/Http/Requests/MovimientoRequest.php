@@ -24,6 +24,7 @@ class MovimientoRequest extends FormRequest
     public function rules()
     {
         return [
+            'tipo_movimiento' => 'required',
             'fecha' => 'nullable|date',
         ];
     }

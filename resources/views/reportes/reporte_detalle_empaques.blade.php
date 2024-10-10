@@ -22,7 +22,7 @@
 
                     <div class="row align-items-center">
                         <div class="col-md-2">
-                            <h3 class="mb-0">Reporte </h3>
+                            <h3 class="mb-0">Reporte Empaques</h3>
                         </div>
                     </div>
 
@@ -70,44 +70,15 @@
                             </div>
 
                         </div>
-                                <!-- cabecera de datos -->
-                                <div class="row mt-4">
-                                    <div class="col-lg-9">
-                                        <div class="d-flex flex-wrap">
-                                            <div class="form-group mx-3 mb-3">
-                                                <label class="form-control-label" for="input-email">{{ __('Cantidad Empaques ') }}</label>
-                                                <br>
-                                                <span class="description" id="resultado-totalStockEsperado">{{$totalStockEsperado}}</span>
-                                            </div>
-                                            <div class="form-group mx-3 mb-3">
-                                                <label class="form-control-label" for="input-email">{{ __('Total empaques registrados') }}</label>
-                                                <br>
-                                                <span class="description" id="resultado-totalStockRegistrado">{{$totalStockRegistrado}}</span>
-                                            </div>
-                                            <div class="form-group mx-3 mb-3">
-                                                <label class="form-control-label" for="input-email">{{ __('Total empaques egresados') }}</label>
-                                                <br>
-                                                <span class="description" id="resultado-totalStockSaldo">{{$totalStockSaldo}}</span>
-                                            </div>
-                                            <div class="form-group mx-3 mb-3">
-                                                <label class="form-control-label" for="input-email">{{ __('Total empaques saldo') }}</label>
-                                                <br>
-                                                <span class="description" id="resultado-totalStockEgresado">{{$totalStockEgresado}}</span>
-                                            </div>
-                                            
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                                <!-- fin cabecera de datos -->
+
                         <div class="">
-                           
+                                
                             
                             <div class="row">
 
                                 <div class="col-12 ">
 
-                                    <div class="ml-4 mb-4 mt-4">Listas de empaques</div>
+                                    <div class="ml-4 mb-4 mt-4">Empaques </div>
                                     <div class="table-responsive px-4">
                                         <table id="tablaDetalle" class="table align-items-center table-flush">
                                             <thead class="thead-light">
@@ -120,7 +91,7 @@
                                                     <th scope="col">Cant lista</th>
                                                     <th scope="col">Registrado</th>
                                                     <th scope="col">Egresado</th>
-                                                    <th scope="col">Saldo</th>
+                                                    <th scope="col">Stock</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -174,12 +145,10 @@
 
 
        
-
-//datatables 
         
 var tablaDetalle = $('#tablaDetalle').DataTable({
         searching: false, // Desactivar la función de búsqueda
-        ordering: true ,
+        ordering: false ,
     language: {
         "decimal": "",
         "emptyTable": "No hay información",
@@ -254,11 +223,6 @@ var tablaDetalle = $('#tablaDetalle').DataTable({
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
-
-                    document.getElementById('resultado-totalStockEsperado').innerText = data.totalStockEsperado;
-                    document.getElementById('resultado-totalStockRegistrado').innerText = data.totalStockRegistrado;
-                    document.getElementById('resultado-totalStockSaldo').innerText = data.totalStockSaldo;
-                    document.getElementById('resultado-totalStockEgresado').innerText = data.totalStockEgresado;
 
                     $('#tablaDetalle').DataTable().destroy();
                     $('#tablaDetalle tbody').empty();
@@ -387,8 +351,6 @@ XLSX.utils.book_append_sheet(wb, ws, 'Reporte de listas de empaque');
 
 XLSX.writeFile(wb, 'Reporte_Listas.xlsx');
 }
-
-
 
 
 

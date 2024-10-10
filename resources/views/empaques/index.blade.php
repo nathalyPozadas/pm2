@@ -463,7 +463,7 @@
                                 <!-- Tipo de movimiento [ingreso/salida , egreso] -->
                                 <div class="form-group">
                                     <label for="input-tipo_movimiento" class="form-control-label">Movimiento</label>
-                                    <select name="tipo_movimiento" id="input-tipo_movimiento" class="form-control form-control-alternative">
+                                    <select name="tipo_movimiento" id="input-tipo_movimiento" class="form-control form-control-alternative" required>
                                         <option value="" selected >Seleccionar</option>
                                         <option value="interno">Ingreso/Salida</option>
                                         <option value="externo">Externo</option>
@@ -508,7 +508,15 @@
                                     <!-- Destino -->
                                     <div class="form-group">
                                         <label for="input-destino" class="form-control-label">Destino</label>
-                                        <input type="text" name="destino" id="input-destino" class="form-control form-control-alternative" placeholder="">
+                                        <select name="destino" id="input-destino" class="form-control form-control-alternative" >
+                                                <option value="" selected >Seleccione un destino</option>
+                                                <option value="Centro Distribución Montecristo">Centro Distribución Montecristo</option>
+                                                <option value="Tienda Ñuflo de Chavez">Tienda Ñuflo de Chavez</option>
+                                                <option value="Tienda Cristobal de Mendoza">Tienda Cristobal de Mendoza</option>
+                                                <option value="Tienda Grigota">Tienda Grigota</option>
+                                                <option value="Tienda Mutualista">Tienda Mutualista</option>
+                                                <option value="Venta Directa">Venta Directa</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -532,12 +540,26 @@
                     $('#input-almacen_id').val('');
                     $('#input-ubicacion_almacen_id').val('');   
 
+                    $('#input-almacen_id').prop('required', true);
+                    $('#input-ubicacion_almacen_id').prop('required', true);
+
+                    $('#input-nota').prop('required', false);
+                    $('#input-cliente').prop('required', false);
+                    $('#input-destino').prop('required', false);
+
                     $('#section_mov_interno').show();
                     $('#section_mov_externo').hide();
                 } else if (tipoMovimiento === 'externo') {
                     $('#input-nota').val('');
                     $('#input-cliente').val('');
                     $('#input-destino').val('');
+
+                    $('#input-almacen_id').prop('required', false);
+                    $('#input-ubicacion_almacen_id').prop('required', false);
+
+                    $('#input-nota').prop('required', true);
+                    $('#input-cliente').prop('required', true);
+                    $('#input-destino').prop('required', true);
 
                     $('#section_mov_interno').hide();
                     $('#section_mov_externo').show();
