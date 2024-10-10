@@ -438,13 +438,6 @@
                                         <label for="input-observacion" class="form-control-label">Observación</label>
                                         <input type="text" name="observacion" id="input-observacion" class="form-control form-control-alternative" placeholder="" >
                                     </div>
-                            
-                                    <!-- Lugar -->
-                                    <div class="form-group">
-                                        <label for="input-ubicacion_almacen_id" class="form-control-label">Lugar</label>
-                                        <select name="ubicacion_almacen_id" id="input-ubicacion_almacen_id" class="form-control form-control-alternative" required>
-                                        </select>
-                                    </div>
 
                                     <!-- Criterio 1 -->
                                     <div class="custom-control custom-checkbox">

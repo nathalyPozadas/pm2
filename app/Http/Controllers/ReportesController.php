@@ -92,19 +92,12 @@ class ReportesController extends Controller
 
     public function reporteEmpaques_index()
     {
-
-        $fechaFin = Carbon::today()->toDateString();
-        $fechaInicio = Carbon::today()->subMonths(3)->toDateString();
-
-        //$listas = $this->obtenerListado($fechaInicio, $fechaFin, '0');
-        $listas = [];
+        $listas = $this->obtenerListado_empaques();
+        
         $empresa = Empresa::find(auth()->user()->empresa_id);
         $icono_empresa = $empresa->icono;
 
-        $proveedores = Proveedor::where('empresa_id',$empresa->id)->get();
-        $almacenes = Almacen::where('empresa_id',$empresa->id)->get();
-       
-        return view("reportes.reporte_detalle_empaques", ['listas'=>$listas, 'icono_empresa'=>$icono_empresa  ,'fecha_inicio'=>$fechaInicio, 'fecha_fin'=>$fechaFin, 'proveedores'=> $proveedores, 'almacenes'=>$almacenes]);
+        return view("reportes.reporte_detalle_empaques", ['listas'=>$listas, 'icono_empresa'=>$icono_empresa]);
     }
 
     public function reporteEmpaques(Request $request)
@@ -124,5 +117,24 @@ class ReportesController extends Controller
        
         return response()->json(['listas' => $listas, 'proveedores'=> $proveedores, 'almacenes'=>$almacenes ],200);
         */
+    }
+
+    private function obtenerListado_empaques()
+    {
+        $listas = ListaEmpaques::where('lista_empaques.empresa_id', auth()->user()->empresa_id)->get();
+        foreach($listas as $lista){
+            $empaques = ListaEmpaques::where('lista_empaques.id',$lista->id)
+            ->join('empaque','lista_empaques.id','=','empaque.lista_empaques_id')
+            ->join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
+            ->join('ubicacion_almacen','empaque.ubicacion_almacen_id','ubicacion_almacen.id')
+            ->join('almacen','ubicacion_almacen.almacen_id','almacen.id')
+            ->select('lista_empaques.codigo as lista_empaque_codigo','empaque.*', 'proveedor.nombre as proveedor_nombre', 'ubicacion_almacen.nombre as empaque_ubicacion','almacen.nombre as empaque_almacen')
+            ->orderBy('lista_empaques.id', 'desc')
+            ->get();
+
+            $lista->contenido = $empaques;
+        }
+
+        return $listas;
     }
 }
