@@ -21,8 +21,8 @@
                 <div class="card-header border-0" >
 
                     <div class="row align-items-center">
-                        <div class="col-md-2">
-                            <h3 class="mb-0">Reporte </h3>
+                        <div class="col-md-6">
+                            <h3 class="mb-0">Reporte Listas</h3>
                         </div>
                     </div>
 
@@ -72,27 +72,29 @@
                         </div>
                                 <!-- cabecera de datos -->
                                 <div class="row mt-4">
-                                    <div class="col-lg-9">
+                                    <div class="col-lg-6">
+                                    </div>
+                                    <div class="col-lg-6">
                                         <div class="d-flex flex-wrap">
                                             <div class="form-group mx-3 mb-3">
-                                                <label class="form-control-label" for="input-email">{{ __('Cantidad Empaques ') }}</label>
+                                                <label class="form-control-label" for="input-email">{{ __('Total Esperado ') }}</label>
                                                 <br>
                                                 <span class="description" id="resultado-totalStockEsperado">{{$totalStockEsperado}}</span>
                                             </div>
                                             <div class="form-group mx-3 mb-3">
-                                                <label class="form-control-label" for="input-email">{{ __('Total empaques registrados') }}</label>
+                                                <label class="form-control-label" for="input-email">{{ __('Total Registrado') }}</label>
                                                 <br>
                                                 <span class="description" id="resultado-totalStockRegistrado">{{$totalStockRegistrado}}</span>
                                             </div>
                                             <div class="form-group mx-3 mb-3">
-                                                <label class="form-control-label" for="input-email">{{ __('Total empaques egresados') }}</label>
-                                                <br>
-                                                <span class="description" id="resultado-totalStockSaldo">{{$totalStockSaldo}}</span>
-                                            </div>
-                                            <div class="form-group mx-3 mb-3">
-                                                <label class="form-control-label" for="input-email">{{ __('Total empaques saldo') }}</label>
+                                                <label class="form-control-label" for="input-email">{{ __('Total Egresados') }}</label>
                                                 <br>
                                                 <span class="description" id="resultado-totalStockEgresado">{{$totalStockEgresado}}</span>
+                                            </div>
+                                            <div class="form-group mx-3 mb-3">
+                                                <label class="form-control-label" for="input-email">{{ __('Total Saldo Actual') }}</label>
+                                                <br>
+                                                <span class="description" id="resultado-totalStockSaldo">{{$totalStockSaldo}}</span>
                                             </div>
                                             
                                         </div>
@@ -107,20 +109,19 @@
 
                                 <div class="col-12 ">
 
-                                    <div class="ml-4 mb-4 mt-4">Listas de empaques</div>
                                     <div class="table-responsive px-4">
                                         <table id="tablaDetalle" class="table align-items-center table-flush">
                                             <thead class="thead-light">
                                                 <tr>
                                                     <th scope="col">#</th>
                                                     <th scope="col">Código</th>
-                                                    <th scope="col">Factura</th>
+                                                    <th scope="col">OC/Factura</th>
                                                     <th scope="col">Proveedor</th>
-                                                    <th scope="col">Fecha recepcion</th>
-                                                    <th scope="col">Cant lista</th>
-                                                    <th scope="col">Registrado</th>
-                                                    <th scope="col">Egresado</th>
-                                                    <th scope="col">Saldo</th>
+                                                    <th scope="col">Fecha recepción</th>
+                                                    <th scope="col">Stock esperado</th>
+                                                    <th scope="col">Stock Registrado</th>
+                                                    <th scope="col">Stock Egresado</th>
+                                                    <th scope="col">Stock Actual</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -332,6 +333,14 @@ var tablaDetalle = $('#tablaDetalle').DataTable({
     var filas = tabla.getElementsByTagName('tr');
     var datos = [];
     
+    var hoy = new Date();
+    var fechaHoraFormateada = hoy.getDate().toString().padStart(2, '0') + '-' + 
+                      (hoy.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                      hoy.getFullYear() + ' ' + 
+                      hoy.getHours().toString().padStart(2, '0') + ':' + 
+                      hoy.getMinutes().toString().padStart(2, '0');
+        
+   
     var bordes = {
         top: { style: "thin" },
         bottom: { style: "thin" },
@@ -339,10 +348,13 @@ var tablaDetalle = $('#tablaDetalle').DataTable({
         right: { style: "thin" }
     };
 
+    datos.push(['','REPORTE DETALLE DE LISTA DE EMPAQUE']);
     datos.push(['']);
-    datos.push(['Proveedor:', proveedorSeleccionado, '', '', 'Fecha recepción:', fechaSeleccionadaDesde + ' hasta '+fechaSeleccionadaHasta]);
+    datos.push(['',,'','','','','','Fecha reporte:',fechaHoraFormateada]);
     datos.push(['']);
-    var cabecera = ["","Lista Código", "OC/Factura", "Proveedor", "Fecha Recepción", "Cant Empaques", "Ingreso", "Egresado", "Saldo"];
+    datos.push(['Proveedor:', proveedorSeleccionado, '', 'Fecha recepción:', fechaSeleccionadaDesde + ' hasta '+fechaSeleccionadaHasta]);
+    datos.push(['']);
+    var cabecera = ["","Lista empaque", "OC/Factura", "Proveedor", "Fecha Recepción", "Cant Empaques", "Ingreso", "Egresado", "Saldo"];
     datos.push(cabecera);
 
 
@@ -365,7 +377,7 @@ var tablaDetalle = $('#tablaDetalle').DataTable({
     }
 
     var filaTotales = [
-        '', '', '', '', 'Totales:', 
+        '', '', '', '', 'Total', 
         totalCantLista, 
         totalRegistrado, 
         totalEgresado, 
@@ -383,10 +395,12 @@ const colWidths = datos[0].map((_, colIndex) => {
 
 // Crear el libro y agregar la hoja de cálculo
 var wb = XLSX.utils.book_new();
-XLSX.utils.book_append_sheet(wb, ws, 'Reporte de listas de empaque');
+XLSX.utils.book_append_sheet(wb, ws, 'Reporte listas');
 
-XLSX.writeFile(wb, 'Reporte_Listas.xlsx');
+XLSX.writeFile(wb, 'Reporte_Detalle_Lista_'+fechaHoraFormateada+'.xlsx');
 }
+
+
 
 
 

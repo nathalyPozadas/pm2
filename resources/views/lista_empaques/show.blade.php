@@ -63,10 +63,10 @@
 
                                     </div>
                                     <p class="mt-3 mb-0 text-muted text-sm">
-                                    <h5>Lista: {{$lista->stock_esperado}}</h5>
-                                    <h5>Registrados: {{$lista->stock_registrado}}</h5>
+                                    <h5>Esperado: {{$lista->stock_esperado}}</h5>
+                                    <h5>Registrado: {{$lista->stock_registrado}}</h5>
+                                    <h5>Egresado: {{$lista->stock_registrado - $lista->stock_actual}}</h5>
                                     <h5>Actual: {{$lista->stock_actual}}</h5>
-                                    <h5>Egresados: {{$lista->stock_registrado - $lista->stock_actual}}</h5>
                                     </p>
                                 </div>
                             </div>

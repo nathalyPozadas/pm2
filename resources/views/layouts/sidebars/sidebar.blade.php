@@ -44,12 +44,12 @@
                     <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route( 'reporte.listas')}}">
-                                    {{ __('Reporte de listas') }}
+                                    {{ __('Reporte Listas') }}
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route( 'reporte.empaques')}}">
-                                    {{ __('Reporte detallado') }}
+                                    {{ __('Reporte Empaques') }}
                                 </a>
                             </li>
                     </ul>

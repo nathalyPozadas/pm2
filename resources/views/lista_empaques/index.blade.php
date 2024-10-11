@@ -16,7 +16,7 @@
                 <div class="card-header border-0">
                     <div class="row align-items-center">
                         <div class="col-8 ">
-                            <h3 class="mb-0">Lista de empaques</h3>
+                            <h3 class="mb-0">Listas de empaques</h3>
                         </div>
                     </div>
                     <div class="row ">
@@ -38,8 +38,9 @@
                                 <th scope="col">N°</th>
                                 <th scope="col">Código de Lista</th>
                                 <th scope="col">Proveedor</th>
-                                <th scope="col">Stock Llegada</th>
+                                <th scope="col">Stock Esperado</th>
                                 <th scope="col">Stock Registrado</th>
+                                <th scope="col">Stock Egresado</th>
                                 <th scope="col">Stock Actual</th>
                                 <th scope="col"></th>
                             </tr>
@@ -52,6 +53,7 @@
                                     <td>{{$lista->proveedor_nombre}}</td>
                                     <td>{{$lista->stock_esperado}}</td>
                                     <td>{{$lista->stock_registrado}}</td>
+                                    <td>{{$lista->stock_registrado-$lista->stock_actual}}</td>
                                     <td>{{$lista->stock_actual}}</td>
                                     <td>
                                         <a>
@@ -255,8 +257,11 @@
                                 @method('POST')
                                 <div class="modal-body">
                                 
-                                    <input type="text" name="codigo" id="input-lista-empaque" class="form-control form-control-alternative" value="${lista.codigo}" required hidden>
-                          
+                                    <!-- Codigo Lista de Empaque -->
+                                    <div class="form-group">
+                                        <label for="input-lista-empaque" class="form-control-label">Código de Lista</label>
+                                        <input type="text" name="codigo" id="input-lista-empaque" class="form-control form-control-alternative" placeholder="0" required>
+                                    </div>
 
                                     <!-- OC/Factura -->
                                     <div class="form-group">

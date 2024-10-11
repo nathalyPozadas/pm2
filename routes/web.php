@@ -52,7 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/reporte_listas', ['as' => 'reporte.listas', 'uses' => 'App\Http\Controllers\ReportesController@reporteListas_index']);
         Route::post('/reporte_listas', ['as' => 'reporte.listas', 'uses' => 'App\Http\Controllers\ReportesController@reporteListas']);
 
-        Route::get('/reporte_empaques', ['as' => 'reporte.empaques', 'uses' => 'App\Http\Controllers\ReportesController@reporteEmpaques_index']);
+        Route::get('/reporte_empaques', ['as' => 'reporte.empaques', 'uses' => 'App\Http\Controllers\ReportesController@reporteEmpaques']);
         Route::post('/reporte_empaques', ['as' => 'reporte.empaques', 'uses' => 'App\Http\Controllers\ReportesController@reporteEmpaques']);
 });
 
