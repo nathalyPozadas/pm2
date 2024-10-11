@@ -15,7 +15,7 @@ class ReportesController extends Controller
     public function reporteListas_index()
     {
         $fechaFin = Carbon::today()->toDateString();
-        $fechaInicio = Carbon::today()->subMonths(3)->toDateString();
+        $fechaInicio = Carbon::today()->subMonths(1)->toDateString();
 
         $totalStockEsperado = 0;
         $totalStockRegistrado = 0;
@@ -94,7 +94,7 @@ class ReportesController extends Controller
     {
         
         if(count($request->request) == 0){
-            $fechaInicio = Carbon::today()->subMonths(3)->toDateString();
+            $fechaInicio = Carbon::today()->subMonths(1)->toDateString();
             $fechaFin = Carbon::today()->toDateString();
             $proveedor_id='0';
             $almacen_id = '0';
