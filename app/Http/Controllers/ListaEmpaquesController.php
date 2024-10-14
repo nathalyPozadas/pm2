@@ -65,10 +65,10 @@ class ListaEmpaquesController extends Controller
 
     public function store(ListaEmpaquesRequest $request)
     {
-
         $listaEmpaques = new ListaEmpaques();
         $listaEmpaques->codigo = $request->codigo;
         $listaEmpaques->canal_aduana = $request->canal_aduana;
+        $listaEmpaques->siniestrado  = $request->has('siniestrado') ? true : false;
         $listaEmpaques->transporte = $request->transporte;
         $listaEmpaques->factura = $request->factura;
         $listaEmpaques->proveedor_id =  $request->proveedor_id;
@@ -78,6 +78,13 @@ class ListaEmpaquesController extends Controller
         $listaEmpaques->stock_esperado = $request->stock_esperado;
         $listaEmpaques->encargado_id = auth()->user()->trabajador_id;
         $listaEmpaques->empresa_id = auth()->user()->empresa_id;
+
+        if($listaEmpaques->siniestrado){
+            $listaEmpaques->observacion = $request->observacion;
+        }else{
+            $listaEmpaques->observacion = null;
+        }
+
         $listaEmpaques->save();
 
         return redirect()->route('home');
@@ -89,11 +96,18 @@ class ListaEmpaquesController extends Controller
         
         $listaEmpaques->codigo = $request->codigo;
         $listaEmpaques->canal_aduana = $request->canal_aduana;
+        $listaEmpaques->siniestrado  = $request->has('siniestrado') ? true : false;
         $listaEmpaques->transporte = $request->transporte;
         $listaEmpaques->factura = $request->input('factura');
         $listaEmpaques->proveedor_id = $request->input('proveedor_id');
         $listaEmpaques->fecha_recepcion = $request->input('fecha_recepcion');
         $listaEmpaques->stock_esperado = $request->input('stock_esperado');
+
+        if($listaEmpaques->siniestrado){
+            $listaEmpaques->observacion = $request->observacion;
+        }else{
+            $listaEmpaques->observacion = null;
+        }
         
         $listaEmpaques->update();
 

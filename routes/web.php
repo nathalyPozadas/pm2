@@ -3,6 +3,9 @@
 use App\Http\Controllers\ListaEmpaquesController;
 use Illuminate\Support\Facades\Route;
 
+use App\Exports\SimpleExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,11 +52,15 @@ Route::group(['middleware' => 'auth'], function () {
     //PERSONAL
     
     //REPORTES
-        Route::get('/reporte_listas', ['as' => 'reporte.listas', 'uses' => 'App\Http\Controllers\ReportesController@reporteListas_index']);
+        Route::get('/reporte_listas', ['as' => 'reporte.listas', 'uses' => 'App\Http\Controllers\ReportesController@reporteListas']);
         Route::post('/reporte_listas', ['as' => 'reporte.listas', 'uses' => 'App\Http\Controllers\ReportesController@reporteListas']);
 
         Route::get('/reporte_empaques', ['as' => 'reporte.empaques', 'uses' => 'App\Http\Controllers\ReportesController@reporteEmpaques']);
         Route::post('/reporte_empaques', ['as' => 'reporte.empaques', 'uses' => 'App\Http\Controllers\ReportesController@reporteEmpaques']);
+
+        Route::post('/reporteEmpaquesExcel', ['as' => 'reporte.empaques.excel', 'uses' => 'App\Http\Controllers\ReportesController@reporteEmpaquesExcel']);
+        Route::post('/reporteListasExcel', ['as' => 'reporte.listas.excel', 'uses' => 'App\Http\Controllers\ReportesController@reporteListasExcel']);
+        
 });
 
 

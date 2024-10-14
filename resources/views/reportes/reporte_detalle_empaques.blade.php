@@ -82,7 +82,7 @@
                                     <div class="col-lg-9">
                                         <div class="d-flex flex-wrap">
                                             <div class="form-group mx-3 mb-3">
-                                                <label class="form-control-label">Código Lista Empaque</label>
+                                                <label class="form-control-label">Lista de Empaque</label>
                                                 <br>
                                                 <span class="description">{{$lista->codigo}}</span>
                                             </div>
@@ -104,7 +104,7 @@
                                     <thead class="thead-light">
                                         <tr>
                                             <th>#</th>
-                                            <th>Código lista Empaque</th>
+                                            <th>Lista de Empaque</th>
                                             <th>No Empaque</th>
                                             <th>Tipo de empaque</th>
                                             <th>Descripción</th>
@@ -150,70 +150,62 @@
 document.getElementById('exportarExcel').addEventListener('click', function() {
     var button = this;
     var originalContent = button.innerHTML;
-    
+
+    // Deshabilitar botón y mostrar spinner
     button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...';
     button.disabled = true;
 
-    setTimeout(function() {
+    // Obtener los valores de las variables de PHP que vinieron con la vista
+    var proveedor_id = '{{ $proveedor_id }}';
+    var fechaInicio = '{{ $fecha_inicio }}';
+    var fechaFin = '{{ $fecha_fin }}';
+    var almacen_id = '{{ $almacen_id }}'; // Si también estás manejando almacén
 
-
-        var wb = XLSX.utils.book_new(); 
-        var ws_data = [];
-        var hoy = new Date();
-        var fechaHoraFormateada = hoy.getDate().toString().padStart(2, '0') + '-' + 
-                      (hoy.getMonth() + 1).toString().padStart(2, '0') + '-' + 
-                      hoy.getFullYear() + ' ' + 
-                      hoy.getHours().toString().padStart(2, '0') + ':' + 
-                      hoy.getMinutes().toString().padStart(2, '0');
-
-        ws_data.push([
-            '', 
-            'REPORTE DETALLE TOTAL DE EMPAQUES POR LISTA DE EMPAQUE'
-        ]);
-        ws_data.push(['']);
-        ws_data.push(['', '', '', '', '', 'Fecha reporte', fechaHoraFormateada]);
-         ws_data.push(['']);
-        @foreach($listas as $lista)
-            ws_data.push([
-                'Código de Lista:', '{{$lista->codigo}}', 
-                'Stock Actual:', '{{$lista->stock_actual}}',
-                'Fecha Recepción:', '{{$lista->fecha_recepcion}}'
-            ]);
-
-            ws_data.push([
-                'Código lista Empaque', 
-                'No Empaque', 
-                'Tipo de empaque', 
-                'Descripción', 
-                'Peso', 
-                'U.M.', 
-                'Almacén', 
-                'Ubicación'
-            ]);
-
-            @foreach($lista->contenido as $empaque)
-                ws_data.push([
-                    '{{$empaque->lista_empaque_codigo}}',
-                    '{{$empaque->numero}}',
-                    '{{$empaque->tipo}}',
-                    '{{$empaque->descripcion}}',
-                    '{{$empaque->peso}}',
-                    '{{$empaque->unidad_medida}}',
-                    '{{$empaque->empaque_almacen}}',
-                    '{{$empaque->empaque_ubicacion}}'
-                ]);
-            @endforeach
-
-            ws_data.push([]);
-        @endforeach
-
-        var ws = XLSX.utils.aoa_to_sheet(ws_data);
-        XLSX.utils.book_append_sheet(wb, ws, 'Reporte Empaques');
-        XLSX.writeFile(wb, 'Reporte_Detalle_Empaque_'+fechaHoraFormateada+'.xlsx');
+    // Realizar solicitud AJAX con Fetch API
+    fetch('{{ route("reporte.empaques.excel") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Incluir token CSRF
+        },
+        body: JSON.stringify({
+            proveedor_id: proveedor_id,
+            fechaInicio: fechaInicio,
+            fechaFin: fechaFin,
+            almacen_id: almacen_id
+        })
+    })
+    .then(response => {
+        // Verificar si la respuesta es exitosa
+        if (response.ok) {
+            return response.blob(); // Convertir la respuesta en un objeto Blob (archivo)
+        } else {
+            throw new Error('Error al generar el reporte');
+        }
+    })
+    .then(blob => {
+        // Crear un enlace temporal para descargar el archivo
+        var downloadUrl = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = 'reporte_empaques_' + new Date().toISOString().slice(0, 10) + '.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
         
+        // Restaurar el botón
         button.innerHTML = originalContent;
         button.disabled = false;
-    }, 1500);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Hubo un problema al generar el reporte.');
+
+        // Restaurar el botón en caso de error
+        button.innerHTML = originalContent;
+        button.disabled = false;
+    });
 });
+
 </script>
 @endpush

@@ -38,8 +38,20 @@ class DatabaseSeeder extends Seeder
 
         
         $trabajador = Trabajador::create([
-            'nombres' => 'Juan',
-            'apellidos' => 'Perez',
+            'nombres' => 'Usuario',
+            'apellidos' => 'Rodriguez',
+            'fecha_nacimiento' => '2024-06-05',
+            'cargo' => 'encargado almacen',
+            'telefono' => '67832810',
+            'direccion' => 'Av Santa Cruz nro 125',
+            'ci' => '8575455',
+            'sexo' => 'M',
+            'empresa_id' => $empresa->id
+        ]);
+
+        $trabajador1 = Trabajador::create([
+            'nombres' => 'Usuario',
+            'apellidos' => 'Administracion',
             'fecha_nacimiento' => '2024-06-05',
             'cargo' => 'gerente',
             'telefono' => '67832810',
@@ -48,18 +60,69 @@ class DatabaseSeeder extends Seeder
             'sexo' => 'M',
             'empresa_id' => $empresa->id
         ]);
+        $trabajador2 = Trabajador::create([
+            'nombres' => 'Usuario',
+            'apellidos' => 'Almacen Warnes',
+            'fecha_nacimiento' => '2024-06-05',
+            'cargo' => 'gerente',
+            'telefono' => '67832810',
+            'direccion' => 'Av Santa Cruz nro 125',
+            'ci' => '8575455',
+            'sexo' => 'M',
+            'empresa_id' => $empresa->id
+        ]);
+        $trabajador3 = Trabajador::create([
+            'nombres' => 'Karem',
+            'apellidos' => 'Infantas',
+            'fecha_nacimiento' => '2024-06-05',
+            'cargo' => 'gerente',
+            'telefono' => '67832810',
+            'direccion' => 'Av Santa Cruz nro 125',
+            'ci' => '8575455',
+            'sexo' => 'F',
+            'empresa_id' => $empresa->id
+        ]);
 
+       $usuario2 = User::create([
+            'email' => 'jrodriguez@perbol.com.bo',
+            'email_verified_at' => now(),
+            'password' => Hash::make('jrodriguez'),
+            'created_at' => now(),
+            'updated_at' => now(),
+            'trabajador_id' => $trabajador->id,
+            'empresa_id' => $empresa->id
+        ]);
 
-       $usuario = User::create([
-          // 'name' => 'pablo perez',
-           'email' => 'perbol@gmail.com',
-           'email_verified_at' => now(),
-           'password' => Hash::make('admin'),
-           'created_at' => now(),
-           'updated_at' => now(),
-           'trabajador_id' => $trabajador->id,
-           'empresa_id' => $empresa->id
-       ]);
+        $usuario3 = User::create([
+            'email' => 'administracion@perbol.com.bo',
+            'email_verified_at' => now(),
+            'password' => Hash::make('administracion'),
+            'created_at' => now(),
+            'updated_at' => now(),
+            'trabajador_id' => $trabajador1->id,
+            'empresa_id' => $empresa->id
+        ]);
+
+        $usuario4 = User::create([
+            'email' => 'almacenwarnes@perbol.com.bo',
+            'email_verified_at' => now(),
+            'password' => Hash::make('almacenwarnes'),
+            'created_at' => now(),
+            'updated_at' => now(),
+            'trabajador_id' => $trabajador2->id,
+            'empresa_id' => $empresa->id
+        ]);
+
+        $usuario5 = User::create([
+            'email' => 'kareminfantas@perbol.com.bo',
+            'email_verified_at' => now(),
+            'password' => Hash::make('kareminfantas'),
+            'created_at' => now(),
+            'updated_at' => now(),
+            'trabajador_id' => $trabajador3->id,
+            'empresa_id' => $empresa->id
+        ]);
+   
 
        $proveedores = [
             ['codigo_erp' => 4003, 'nombre' => 'LOUIS DELIUS'],

@@ -160,9 +160,9 @@
 
                                     <!-- Lista empaques -->
                                     <div class="form-group">
-                                        <label for="input-lista_empaques_id" class="form-control-label">Codigo lista empaques</label>
+                                        <label for="input-lista_empaques_id" class="form-control-label">Lista de Empaque</label>
                                         <select name="lista_empaques_id" id="input-lista_empaques_id" class="form-control form-control-alternative" required >
-                                            <option value="" selected>Seleccione un tipo de empaque</option>
+                                            <option value="" selected>Seleccione una lista de empaque</option>
                                              @foreach($listas as $lista)
                                                 <option value="{{$lista->id}}">{{$lista->codigo}}</option>
                                              @endforeach  
@@ -192,7 +192,7 @@
                                         <label for="input-peso" class="form-control-label">Peso</label>
                                         <input type="number" name="peso" id="input-peso" class="form-control form-control-alternative" placeholder="0" onchange="toggleUnidadMedida()">
                                         <select name="unidad_medida" id="input-unidad_medida" class="form-control form-control-alternative" >
-                                            <option value="" selected >Seleccione</option>
+                                            <option value="" selected >Seleccione unidad medida</option>
                                             <option value="kilo">Kg</option>
                                         </select>
                                     </div>
@@ -235,7 +235,7 @@
                                     <!-- Criterio 3 -->
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" class="custom-control-input" id="criterio3" name="criterio3">
-                                        <label class="custom-control-label" for="criterio3">Criterio 2</label>
+                                        <label class="custom-control-label" for="criterio3">Criterio 3</label>
                                     </div>
 
                             </div>
@@ -381,7 +381,7 @@
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" class="custom-control-input" id="criterio3" name="criterio3"
                                             ${empaque.criterio3 ? 'checked' : '' } >
-                                        <label class="custom-control-label" for="criterio3">Criterio 2</label>
+                                        <label class="custom-control-label" for="criterio3">Criterio 3</label>
                                     </div>
                                  
                             </div>
@@ -446,19 +446,22 @@
                                 @method('post')
                             <div class="modal-body">
                                 
-                                <input type="number" name="empaque_id" id="input-fecha_movimiento" value=${empaque_id} class="form-control form-control-alternative d-none" required >
+                                <input type="number" name="empaque_id" id="empaque_id" value=${empaque_id} class="form-control form-control-alternative d-none" required >
                                 
                                 <!-- Fecha movimiento -->
                                 <div class="form-group">
                                     <label for="input-fecha_movimiento" class="form-control-label">Fecha movimiento</label>
                                     <input type="date" name="fecha" id="input-fecha_movimiento" class="form-control form-control-alternative" required>
+                                    <span id="error-message-fecha" style="color: red; display: none;">Fecha inválida. Asegúrate de ingresar una fecha correcta.</span>
                                 </div>
 
                                 <!-- Hora -->
                                 <div class="form-group">
-                                    <label for="input-hora" class="form-control-label">Time</label>
+                                    <label for="input-hora" class="form-control-label">Hora</label>
                                     <input type="time" name="hora" value="" id="input-hora" class="form-control form-control-alternative" required>
+                                    <span id="error-message-hora" style="color: red; display: none;">Hora inválida. Asegúrate de ingresar una hora correcta.</span>
                                 </div>
+
 
                                 <!-- Tipo de movimiento [ingreso/salida , egreso] -->
                                 <div class="form-group">
@@ -532,6 +535,68 @@
             $('#moverEmpaque').html(contenidoModal);
 
             $('#moverEmpaque').modal('show');
+
+    const inputFechaMovimiento = document.getElementById('input-fecha_movimiento');
+    const errorMessageFecha = document.getElementById('error-message-fecha');
+    const inputHora = document.getElementById('input-hora');
+    const errorMessageHora = document.getElementById('error-message-hora');
+    const form = document.getElementById('formMovimientoEmpaque');
+    let isValidFechaMovimiento = false;  
+    let isValidHoraMovimiento = false;  
+
+    // Función para validar la fecha
+    function validarFecha(fechaInput) {
+        const fecha = new Date(fechaInput);
+        const anio = fecha.getFullYear();
+        
+        if (anio >= 1900 && anio <= 2099 && !isNaN(fecha.getTime())) {
+            return true;
+        }
+        return false;
+    }
+
+    // Función para validar la hora
+    function validarHora(horaInput) {
+        const hora = horaInput.split(':');
+        const horas = parseInt(hora[0]);
+        const minutos = parseInt(hora[1]);
+        return (horas >= 0 && horas < 24) && (minutos >= 0 && minutos < 60);
+    }
+
+    // Validar Fecha Movimiento
+    inputFechaMovimiento.addEventListener('input', function() {
+        const fechaIngresada = this.value;
+
+        if (validarFecha(fechaIngresada)) {
+            errorMessageFecha.style.display = 'none';
+            isValidFechaMovimiento = true;
+        } else {
+            errorMessageFecha.style.display = 'block';
+            isValidFechaMovimiento = false;
+        }
+    });
+
+    inputHora.addEventListener('input', function() {
+        const horaIngresada = this.value;
+
+        if (validarHora(horaIngresada)) {
+            errorMessageHora.style.display = 'none';
+            isValidHoraMovimiento = true;
+        } else {
+            errorMessageHora.style.display = 'block';
+            isValidHoraMovimiento = false;
+        }
+    });
+
+    form.addEventListener('submit', function(event) {
+        if (!isValidFechaMovimiento || !isValidHoraMovimiento) {
+            event.preventDefault();
+        }
+    });
+
+
+
+
 
             $('#input-tipo_movimiento').change(function () {
                 var tipoMovimiento = $(this).val();

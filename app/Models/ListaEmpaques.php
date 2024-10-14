@@ -17,6 +17,8 @@ class ListaEmpaques extends Model
         'codigo',
         'factura',
         'canal_aduana',
+        'siniestrado',
+        'observacion',
         'proveedor_id',
         'stock_esperado',
         'stock_registrado',

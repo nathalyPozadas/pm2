@@ -36,7 +36,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th scope="col">N°</th>
-                                <th scope="col">Código de Lista</th>
+                                <th scope="col">Lista de empaque</th>
                                 <th scope="col">Proveedor</th>
                                 <th scope="col">Stock Esperado</th>
                                 <th scope="col">Stock Registrado</th>
@@ -106,6 +106,7 @@
 @endsection
 
 @push('js')
+
 
     <script>
         var table = $('#tablaListaEmpaques').DataTable({
@@ -180,16 +181,32 @@
                                     <div class="form-group">
                                         <label for="input-transporte" class="form-control-label">Aduana - Canal de ingreso</label>
                                         <div class="row pl-2">
-                                            <div class="custom-control custom-radio custom-control-inline">
-                                                <input type="radio" id="customRadioInline1" name="canal_aduana" value="verde" class="custom-control-input" required>
-                                                <label class="custom-control-label" for="customRadioInline1">Canal Verde</label>
+                                             <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="customRadioInline1" name="canal_aduana" value="rojo" class="custom-control-input" required>
+                                                <label class="custom-control-label" for="customRadioInline1">Rojo</label>
+                                            </div>
+                                             <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="customRadioInline2" name="canal_aduana" value="amarillo" class="custom-control-input" required>
+                                                <label class="custom-control-label" for="customRadioInline2">Amarillo</label>
                                             </div>
                                             <div class="custom-control custom-radio custom-control-inline">
-                                                <input type="radio" id="customRadioInline2" name="canal_aduana" value="rojo" class="custom-control-input" required>
-                                                <label class="custom-control-label" for="customRadioInline2">Canal Rojo</label>
+                                                <input type="radio" id="customRadioInline3" name="canal_aduana" value="verde" class="custom-control-input" required>
+                                                <label class="custom-control-label" for="customRadioInline3">Verde</label>
                                             </div>
                                             <div class="invalid-feedback">Por favor, selecciona un canal.</div>
                                         </div>   
+                                    </div>
+
+                                    <!-- Siniestrado -->
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="siniestrado" name="siniestrado">
+                                        <label class="custom-control-label" for="siniestrado">Siniestrado</label>
+                                    </div>
+
+                                    <!-- Observacion -->
+                                    <div class="form-group" id="observacion-group" style="display: none;">
+                                        <label for="input-observacion" class="form-control-label">Observación</label>
+                                        <input type="text" name="observacion" id="input-observacion" class="form-control form-control-alternative" placeholder="" >
                                     </div>
 
                                     <!-- ProveedorId -->
@@ -206,14 +223,16 @@
 
                                     <!-- Fecha recepción -->
                                     <div class="form-group">
-                                        <label for="input-fecha-recepcion" class="form-control-label">Fecha recepción</label>
+                                        <label for="input-fecha-recepcion" class="form-control-label">Fecha Recepción</label>
                                         <input type="date" name="fecha_recepcion" id="input-fecha-recepcion" class="form-control form-control-alternative" required>
+                                        <span id="error-message-recepcion" style="color: red; display: none;">Fecha recepción inválida. Asegúrate de ingresar una fecha correcta.</span>
                                     </div>
 
                                     <!-- Fecha llegada -->
                                     <div class="form-group">
-                                        <label for="input-fecha_llegada" class="form-control-label">Fecha Llegada</label>
-                                        <input type="date" name="fecha_llegada" id="input-fecha_llegada" class="form-control form-control-alternative" required>
+                                        <label for="input-fecha-llegada" class="form-control-label">Fecha Llegada</label>
+                                        <input type="date" name="fecha_llegada" id="input-fecha-llegada" class="form-control form-control-alternative" required>
+                                        <span id="error-message-llegada" style="color: red; display: none;">Fecha llegada inválida. Asegúrate de ingresar una fecha correcta.</span>
                                     </div>
 
                                     <!-- Stock de empaques que se espera -->
@@ -235,108 +254,282 @@
                 $('#registrarPackingList').html(contenidoModal);
 
                 $('#registrarPackingList').modal('show');
+
+                const siniestradoCheckbox = document.getElementById('siniestrado');
+                const observacionGroup = document.getElementById('observacion-group');
+                const observacionInput = document.getElementById('input-observacion');
+
+                // Función para manejar el cambio del checkbox
+                siniestradoCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        // Mostrar el campo de observación y hacerlo requerido
+                        observacionGroup.style.display = 'block';
+                        observacionInput.required = true;  // Hacerlo requerido
+                    } else {
+                        // Ocultar el campo de observación y eliminar el requerimiento
+                        observacionGroup.style.display = 'none';
+                        observacionInput.required = false; // No requerido
+                        observacionInput.value = ''; // Limpiar el campo de observación
+                    }
+                });
+
+
+                const inputFechaRecepcion = document.getElementById('input-fecha-recepcion');
+                const errorMessageRecepcion = document.getElementById('error-message-recepcion');
+                const inputFechaLlegada = document.getElementById('input-fecha-llegada');
+                const errorMessageLlegada = document.getElementById('error-message-llegada');
+                const form = document.getElementById('formRegistrarListaEmpaque');
+                let isValidRecepcion = false;  
+                let isValidLlegada = false;    
+
+                function validarFecha(fechaInput) {
+                    const fecha = new Date(fechaInput);
+                    const anio = fecha.getFullYear();
+                    
+                    if (anio >= 1900 && anio <= 2099 && !isNaN(fecha.getTime())) {
+                        return true;
+                    }
+                    return false;
+                }
+
+                // Validar Fecha Recepción
+                inputFechaRecepcion.addEventListener('input', function() {
+                    const fechaIngresada = this.value;
+                    
+                    if (validarFecha(fechaIngresada)) {
+                        errorMessageRecepcion.style.display = 'none';
+                        isValidRecepcion = true;
+                    } else {
+                        errorMessageRecepcion.style.display = 'block';
+                        isValidRecepcion = false;
+                    }
+                });
+
+                // Validar Fecha Llegada
+                inputFechaLlegada.addEventListener('input', function() {
+                    const fechaIngresada = this.value;
+                    
+                    if (validarFecha(fechaIngresada)) {
+                        errorMessageLlegada.style.display = 'none';
+                        isValidLlegada = true;
+                    } else {
+                        errorMessageLlegada.style.display = 'block';
+                        isValidLlegada = false;
+                    }
+                });
+
+                form.addEventListener('submit', function(event) {
+                    if (!isValidRecepcion || !isValidLlegada) {
+                        event.preventDefault();
+                    }
+                });
         }
 
         function modalEditarPackingList(elemento) {
-            
-            $('#editarPackingList').empty();
+    $('#editarPackingList').empty();
 
-            var lista = $(elemento).data('lista');
-            console.log('itemID::::', lista.canal_aduana);
-            var contenidoModal = 
-                `<div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Editar Lista de empaques</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                            </button>
+    var lista = $(elemento).data('lista');
+    console.log('itemID::::', lista.canal_aduana);
+
+    // Generar contenido del modal
+    var contenidoModal = `
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Editar Lista de empaques</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formEditarListaEmpaque" method="POST" action="/lista_empaques/${lista.id}/update">
+                    @csrf
+                    @method('POST')
+                    <div class="modal-body">
+
+                        <!-- Codigo Lista de Empaque -->
+                        <div class="form-group">
+                            <label for="input-lista-empaque" class="form-control-label">Lista de Empaque</label>
+                            <input type="text" name="codigo" id="input-lista-empaque" class="form-control form-control-alternative" placeholder="0" value="${lista.codigo}" required>
                         </div>
-                            <form id="formEditarListaEmpaque" method="POST" action="/lista_empaques/${lista.id}/update">
-                                @csrf
-                                @method('POST')
-                                <div class="modal-body">
-                                
-                                    <!-- Codigo Lista de Empaque -->
-                                    <div class="form-group">
-                                        <label for="input-lista-empaque" class="form-control-label">Código de Lista</label>
-                                        <input type="text" name="codigo" id="input-lista-empaque" class="form-control form-control-alternative" placeholder="0" required>
-                                    </div>
 
-                                    <!-- OC/Factura -->
-                                    <div class="form-group">
-                                        <label for="input-factura" class="form-control-label">OC/Factura</label>
-                                        <input type="text" name="factura" id="input-factura" class="form-control form-control-alternative" value="${lista.factura}" required>
-                                    </div>
+                        <!-- OC/Factura -->
+                        <div class="form-group">
+                            <label for="input-factura" class="form-control-label">OC/Factura</label>
+                            <input type="text" name="factura" id="input-factura" class="form-control form-control-alternative" value="${lista.factura}" placeholder="0" required>
+                        </div>
 
-                                    <!-- Transporte -->
-                                    <div class="form-group">
-                                        <label for="input-transporte" class="form-control-label">Transporte</label>
-                                        <input type="text" name="transporte" id="input-transporte" class="form-control form-control-alternative" value="${lista.transporte?? '' }" placeholder="">
-                                    </div>
+                        <!-- Transporte -->
+                        <div class="form-group">
+                            <label for="input-transporte" class="form-control-label">Transporte</label>
+                            <input type="text" name="transporte" id="input-transporte" class="form-control form-control-alternative" value="${lista.transporte ?? ''}" placeholder="">
+                        </div>
 
-                                    <!-- Aduana - Canal de ingreso -->
-                                    <div class="form-group">
-                                        <label for="input-transporte" class="form-control-label">Aduana - Canal de ingreso</label>
-                                        <div class="row pl-2">
-                                            <div class="custom-control custom-radio custom-control-inline">
-                                                <input type="radio" id="canalVerde" name="canal_aduana" value="verde" class="custom-control-input" ${lista.canal_aduana == "verde" ? 'checked' : '' }>
-                                                <label class="custom-control-label" for="canalVerde">Canal Verde</label>
-                                            </div>
-                                            <div class="custom-control custom-radio custom-control-inline">
-                                                <input type="radio" id="canalRojo" name="canal_aduana" value="rojo" class="custom-control-input"  ${lista.canal_aduana == "rojo" ? "checked" : '' }>
-                                                <label class="custom-control-label" for="canalRojo">Canal Rojo</label>
-                                            </div>
-                                            <div class="invalid-feedback">Por favor, selecciona un canal.</div>
-                                        </div>
-                                    </div>
-
-
-
-                                    <!-- Proveedor -->
-                                    <div class="form-group">
-                                        <label for="input-proveedor" class="form-control-label">Proveedor</label>
-                                        <select name="proveedor_id" id="input-proveedor" class="form-control form-control-alternative" required>
-                                            <option value="">Seleccione un proveedor</option>
-                                            @foreach($proveedores as $proveedor)
-                                                <option value="{{ $proveedor->id }}" ${lista.proveedor_id == {{ $proveedor->id }} ? 'selected' : ''}>{{ $proveedor->nombre }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <!-- Fecha recepción -->
-                                    <div class="form-group">
-                                        <label for="input-fecha-recepcion" class="form-control-label">Fecha recepción</label>
-                                        <input type="date" name="fecha_recepcion" id="input-fecha-recepcion" class="form-control form-control-alternative" value="${lista.fecha_recepcion}" required>
-                                    </div>
-
-                                    <!-- Fecha llegada -->
-                                    <div class="form-group">
-                                        <label for="input-fecha_llegada" class="form-control-label">Fecha llegada</label>
-                                        <input type="date" name="fecha_llegada" id="input-fecha_llegada" class="form-control form-control-alternative" value="${lista.fecha_recepcion}" required>
-                                    </div>
-
-                                    <!-- Stock empaques llegada -->
-                                    <div class="form-group">
-                                        <label for="input-stock-llegada" class="form-control-label">Stock empaques esperados</label>
-                                        <input type="number" name="stock_esperado" id="input-stock-llegada" class="form-control form-control-alternative" value="${lista.stock_esperado}" required>
-                                    </div>
-                                
+                        <!-- Aduana - Canal de ingreso -->
+                        <div class="form-group">
+                            <label for="input-canal-aduana" class="form-control-label">Aduana - Canal de ingreso</label>
+                            <div class="row pl-2">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" id="canalRojo" name="canal_aduana" value="rojo" class="custom-control-input" ${lista.canal_aduana == "rojo" ? 'checked' : ''}>
+                                    <label class="custom-control-label" for="canalRojo">Rojo</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" id="canalAmarillo" name="canal_aduana" value="amarillo" class="custom-control-input" ${lista.canal_aduana == "amarillo" ? 'checked' : ''}>
+                                    <label class="custom-control-label" for="canalAmarillo">Amarillo</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" id="canalVerde" name="canal_aduana" value="verde" class="custom-control-input" ${lista.canal_aduana == "verde" ? 'checked' : ''}>
+                                    <label class="custom-control-label" for="canalVerde">Verde</label>
+                                </div>
+                                <div class="invalid-feedback">Por favor, selecciona un canal.</div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                            </div>
-                      </form>
+                        </div>
+                        <!-- Criterio 1 -->
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="siniestrado" name="siniestrado" 
+                                ${lista.siniestrado ? 'checked' : '' }>
+                            <label class="custom-control-label" for="siniestrado">Siniestrado</label>
+                        </div>
+
+                        <!-- Observación -->
+                        <div class="form-group" id="observacion-group" style="display: ${lista.siniestrado ? 'block' : 'none'};">
+                            <label for="input-observacion" class="form-control-label">Observación</label>
+                            <input type="text" name="observacion" id="input-observacion" class="form-control form-control-alternative" placeholder="" 
+                                value="${lista.observacion ? lista.observacion : ''}" ${lista.siniestrado ? 'required' : ''}>
+                        </div>
+
+
+                        <!-- Proveedor -->
+                        <div class="form-group">
+                            <label for="input-proveedor" class="form-control-label">Proveedor</label>
+                            <select name="proveedor_id" id="input-proveedor" class="form-control form-control-alternative" required>
+                                <option value="">Seleccione un proveedor</option>
+                                @foreach($proveedores as $proveedor)
+                                    <option value="{{ $proveedor->id }}" ${lista.proveedor_id == {{ $proveedor->id }} ? 'selected' : ''}>{{ $proveedor->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Fecha recepción -->
+                        <div class="form-group">
+                            <label for="input-fecha-recepcion" class="form-control-label">Fecha Recepción</label>
+                            <input type="date" name="fecha_recepcion" id="input-fecha-recepcion" class="form-control form-control-alternative" value="${lista.fecha_recepcion}" required>
+                            <span id="error-message-recepcion" style="color: red; display: none;">Fecha recepción inválida. Asegúrate de ingresar una fecha correcta.</span>
+                        </div>
+
+                        <!-- Fecha llegada -->
+                        <div class="form-group">
+                            <label for="input-fecha-llegada" class="form-control-label">Fecha Llegada</label>
+                            <input type="date" name="fecha_llegada" id="input-fecha-llegada" class="form-control form-control-alternative" value="${lista.fecha_llegada}" required>
+                            <span id="error-message-llegada" style="color: red; display: none;">Fecha llegada inválida. Asegúrate de ingresar una fecha correcta.</span>
+                        </div>
+
+                        <!-- Stock empaques llegada -->
+                        <div class="form-group">
+                            <label for="input-stock-llegada" class="form-control-label">Stock empaques esperados</label>
+                            <input type="number" name="stock_esperado" id="input-stock-llegada" class="form-control form-control-alternative" value="${lista.stock_esperado}" required>
+                        </div>
+
                     </div>
-                </div>`;
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>`;
 
-                // Agregar el contenido generado al modal de edición
-                $('#editarPackingList').html(contenidoModal);
+    // Agregar el contenido generado al modal de edición
+    $('#editarPackingList').html(contenidoModal);
 
-                // Mostrar el modal
-                $('#editarPackingList').modal('show');
+    // Mostrar el modal
+    $('#editarPackingList').modal('show');
+
+   
+    const siniestradoCheckbox = document.getElementById("siniestrado");
+    const observacionGroup = document.getElementById("observacion-group");
+    const observacionInput = document.getElementById("input-observacion");
+
+    // Inicializa el estado de la observación
+    if (siniestradoCheckbox.checked) {
+        observacionGroup.style.display = "block"; // Muestra el campo de observación
+        observacionInput.required = true; // Requiere el campo de observación
+    } else {
+        observacionGroup.style.display = "none"; // Oculta el campo de observación
+        observacionInput.required = false; // No requiere el campo de observación
+    }
+
+    // Agrega un evento para detectar cambios en el checkbox
+    siniestradoCheckbox.addEventListener("change", function() {
+        if (this.checked) {
+            observacionGroup.style.display = "block"; // Muestra el campo de observación
+            observacionInput.required = true; // Requiere el campo de observación
+        } else {
+            observacionGroup.style.display = "none"; // Oculta el campo de observación
+            observacionInput.required = false; // No requiere el campo de observación
+            observacionInput.value = ''; // Limpia el campo si se desmarca
         }
+    });
+
+    const inputFechaRecepcion = document.getElementById('input-fecha-recepcion');
+    const errorMessageRecepcion = document.getElementById('error-message-recepcion');
+    const inputFechaLlegada = document.getElementById('input-fecha-llegada');
+    const errorMessageLlegada = document.getElementById('error-message-llegada');
+    const form = document.getElementById('formEditarListaEmpaque');
+
+    let isValidRecepcion = true;  
+    let isValidLlegada = true;    
+
+    function validarFecha(fechaInput) {
+        const fecha = new Date(fechaInput);
+        const anio = fecha.getFullYear();
+        
+        if (anio >= 1900 && anio <= 2099 && !isNaN(fecha.getTime())) {
+            return true;
+        }
+        return false;
+    }
+
+    // Validate Fecha Recepción
+    inputFechaRecepcion.addEventListener('input', function() {
+        const fechaIngresada = this.value;
+        
+        if (validarFecha(fechaIngresada)) {
+            errorMessageRecepcion.style.display = 'none';
+            isValidRecepcion = true;
+        } else {
+            errorMessageRecepcion.style.display = 'block';
+            isValidRecepcion = false;
+        }
+    });
+
+    // Validate Fecha Llegada
+    inputFechaLlegada.addEventListener('input', function() {
+        const fechaIngresada = this.value;
+        
+        if (validarFecha(fechaIngresada)) {
+            errorMessageLlegada.style.display = 'none';
+            isValidLlegada = true;
+        } else {
+            errorMessageLlegada.style.display = 'block';
+            isValidLlegada = false;
+        }
+    });
+
+    form.addEventListener('submit', function(event) {
+        // Only prevent submission if the user has interacted with the date fields
+        if (!isValidRecepcion || !isValidLlegada) {
+            event.preventDefault();
+            // Show the error messages if not valid
+            if (!isValidRecepcion) {
+                errorMessageRecepcion.style.display = 'block';
+            }
+            if (!isValidLlegada) {
+                errorMessageLlegada.style.display = 'block';
+            }
+        }
+    });
+}
+
 
         function modalEliminarPackingList(elemento) {
             $('#eliminarPackingList').empty();

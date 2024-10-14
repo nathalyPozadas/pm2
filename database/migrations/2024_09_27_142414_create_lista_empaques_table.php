@@ -25,6 +25,8 @@ return new class extends Migration
             $table->date('fecha_llegada');
             $table->string('transporte')->nullable();
             $table->string(  'canal_aduana');
+            $table->boolean(  'siniestrado')->default(false);
+            $table->string(  'observacion')->nullable();
             $table->date('fecha_creacion');
             $table->unsignedBigInteger('encargado_id');
             $table->unsignedBigInteger('empresa_id');

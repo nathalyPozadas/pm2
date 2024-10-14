@@ -51,6 +51,19 @@
                                     <br>
                                     <span class="description">{{ $lista->factura }}</span>
                                 </div>
+                                <div class="form-group mx-3 mb-3">
+                                    <label class="form-control-label" for="input-email">{{ __('Siniestrado') }}</label>
+                                    <br>
+                                    <span class="description">{{ $lista->siniestrado? 'SI':'NO' }}</span>
+                                </div>
+                                @if($lista->siniestrado)
+                                <div class="form-group mx-3 mb-3">
+                                    <label class="form-control-label" for="input-email">{{ __('Observacion') }}</label>
+                                    <br>
+                                    <span class="description">{{ $lista->observacion }}</span>
+                                </div>
+                                @endif
+                                
                             </div>
                         </div>
                         <div class="col-lg-2">

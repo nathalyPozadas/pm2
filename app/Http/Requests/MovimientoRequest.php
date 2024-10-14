@@ -25,7 +25,18 @@ class MovimientoRequest extends FormRequest
     {
         return [
             'tipo_movimiento' => 'required',
-            'fecha' => 'nullable|date',
+            'fecha' => ['required', 'date', function ($attribute, $value, $fail) {
+                $this->validateYear($value, $fail);
+            }]
         ];
+    }
+    private function validateYear($value, $fail)
+    {
+        $fecha = \Carbon\Carbon::createFromFormat('Y-m-d', $value);
+        $anio = $fecha->year;
+        
+        if ($anio < 1900 || $anio > 2099) {
+            $fail('El campo :attribute tiene un año fuera del rango permitido (1900-2099).');
+        }
     }
 }
