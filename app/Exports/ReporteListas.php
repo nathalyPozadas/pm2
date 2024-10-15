@@ -49,16 +49,16 @@ class ReporteListas implements FromCollection, WithHeadings, WithStyles, WithEve
                     $lista->factura,
                     $lista->proveedor_nombre,
                     Carbon::parse($lista->fecha_recepcion)->format('d-m-Y'),
-                    $lista->stock_esperado,
-                    $lista->stock_registrado,
-                    ($lista->stock_registrado - $lista->stock_actual),
-                    $lista->stock_actual
+                    strval($lista->stock_esperado),
+                    strval($lista->stock_registrado),
+                    strval($lista->stock_registrado - $lista->stock_actual),
+                    strval($lista->stock_actual)
                 ];     
             }
     
             $seccion[1] = $pos; // Finaliza la posición de la tabla
             $this->seccionTabla[] = $seccion;
-            /*
+            
             
             $data[] = [
                 '',
@@ -70,7 +70,7 @@ class ReporteListas implements FromCollection, WithHeadings, WithStyles, WithEve
                 '=SUM(G8:G' . $pos . ')', // Celda G: Suma de Egresos
                 '=SUM(H8:H' . $pos . ')'  // Celda H: Suma de Saldos
             ];
-            */
+            
         } else {
             // Si no hay filas, puedes agregar una fila vacía o un mensaje
             $data[] = [
