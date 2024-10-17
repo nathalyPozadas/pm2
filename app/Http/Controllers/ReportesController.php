@@ -69,7 +69,13 @@ class ReportesController extends Controller
         })
         ->where('lista_empaques.empresa_id', auth()->user()->empresa_id)
         ->join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
-        ->select('lista_empaques.*', 'proveedor.nombre as proveedor_nombre')
+        ->select('lista_empaques.id',
+                            'lista_empaques.codigo',
+                            'lista_empaques.proveedor_id',
+                            'lista_empaques.stock_esperado',
+                            'lista_empaques.stock_registrado',
+                            'lista_empaques.stock_actual',
+                            'proveedor.nombre as proveedor_nombre')
         ->orderBy('lista_empaques.id', 'desc')
         ->get();
 
@@ -154,7 +160,13 @@ class ReportesController extends Controller
         })
         ->where('lista_empaques.empresa_id', auth()->user()->empresa_id)
         ->join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
-        ->select('lista_empaques.*', 'proveedor.nombre as proveedor_nombre')
+        ->select(  'lista_empaques.id',
+                            'lista_empaques.codigo',
+                            'lista_empaques.proveedor_id',
+                            'lista_empaques.stock_esperado',
+                            'lista_empaques.stock_registrado',
+                            'lista_empaques.stock_actual',
+                            'proveedor.nombre as proveedor_nombre')
         ->orderBy('lista_empaques.id', 'desc')
         ->get();
 

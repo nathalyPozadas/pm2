@@ -26,7 +26,7 @@ class ListaEmpaquesRequest extends FormRequest
     {
         return [
             'codigo' => 'required',
-            'documento' => 'nullable|file|mimes:pdf|max:16384',
+            'documento' => 'nullable|file|mimes:pdf|max:10240',
             'canal_aduana' => 'required',
             'transporte' => 'nullable|string',
             'factura' => 'required',

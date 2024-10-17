@@ -178,11 +178,9 @@
                                             onchange="mostrarPesoArchivo(this)">
                                         
                                         <span class="invalid-feedback" id="error-peso" role="alert">
-                                            <strong>Peso máximo 16 MB</strong>
+                                            <strong>Peso máximo 10 MB</strong>
                                         </span>
                                     </div>
-
-
 
                                     <!-- Transporte -->
                                     <div class="form-group">
@@ -379,7 +377,7 @@
                                 onchange="mostrarPesoArchivo(this)">
                                 
                             <span class="invalid-feedback" id="error-peso" role="alert">
-                                <strong>Peso máximo 16 MB</strong>
+                                <strong>Peso máximo 10 MB</strong>
                             </span>
 
                             <!-- Mostrar el nombre del archivo existente, si hay uno -->
@@ -746,7 +744,7 @@
         }
 
         function mostrarPesoArchivo(input) {
-            var pesoMaximoMB = 16;
+            var pesoMaximoMB = 10;
             var inputArchivo = input;
             
             // Ocultar error inicialmente
