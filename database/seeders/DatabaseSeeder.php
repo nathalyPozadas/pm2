@@ -41,10 +41,10 @@ class DatabaseSeeder extends Seeder
             'nombres' => 'Usuario',
             'apellidos' => 'Sistemas',
             'fecha_nacimiento' => '2024-06-05',
-            'cargo' => 'encargado almacen',
+            'cargo' => 'usuario sistemas',
             'telefono' => '67832810',
             'direccion' => 'Av Santa Cruz nro 125',
-            'ci' => '8575455',
+            'ci' => '0000000',
             'sexo' => 'M',
             'empresa_id' => $empresa->id
         ]);
@@ -101,7 +101,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('pallet1478965'),
             'created_at' => now(),
             'updated_at' => now(),
-            'trabajador_id' => $encargado_sistemas,
+            'trabajador_id' => $encargado_sistemas->id,
             'empresa_id' => $empresa->id
         ]);
 
