@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('codigo');
             $table->string('factura');
+            $table->mediumText('documento')->nullable();
             $table->unsignedBigInteger('proveedor_id');
             $table->integer('stock_esperado');
             $table->integer('stock_registrado')->default(0);

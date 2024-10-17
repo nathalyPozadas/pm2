@@ -16,7 +16,10 @@ class ListaEmpaquesController extends Controller
 {
     public function index()
     {
-        $listas = ListaEmpaques::join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
+        $empresa = Empresa::find(auth()->user()->empresa_id);
+
+        $listas = ListaEmpaques::where('lista_empaques.empresa_id','=',$empresa->id)
+        ->join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
         ->select('lista_empaques.*', 'proveedor.nombre as proveedor_nombre')
         ->orderBy('lista_empaques.id', 'desc')
         ->get();
@@ -25,14 +28,15 @@ class ListaEmpaquesController extends Controller
             $lista->tiene_movimientos = $this->tieneMovimientos($lista->id);
         }
         
-        $empresa = Empresa::find(auth()->user()->empresa_id);
         $icono_empresa = $empresa->icono;
 
-        $proveedores = Proveedor::where('empresa_id', 1)->orderBy('nombre')->get();
+        $proveedores = Proveedor::where('empresa_id','=', $empresa->id)
+        ->orderBy('nombre')->get();
         
-        $almacenes = Almacen::orderBy('nombre')->get();
+        $almacenes = Almacen::where('almacen.empresa_id', $empresa->id)->orderBy('nombre')->get();
+
         foreach($almacenes as $almacen){
-            $almacen->ubicaciones = UbicacionAlmacen::where('ubicacion_almacen.almacen_id', $almacen->id)
+            $almacen->ubicaciones = UbicacionAlmacen::where('empresa_id', $empresa->id)->where('ubicacion_almacen.almacen_id', $almacen->id)
             ->whereNull('ubicacion_almacen.deleted_at')
             ->get();
         }
@@ -42,12 +46,15 @@ class ListaEmpaquesController extends Controller
 
     public function show($id)
     {
-        $lista = ListaEmpaques::where('lista_empaques.id', $id)
+        $empresa = Empresa::find(auth()->user()->empresa_id);
+
+        $lista = ListaEmpaques::where('lista_empaques.empresa_id','=', $empresa->id)->where('lista_empaques.id', $id)
         ->join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
         ->select('lista_empaques.*', 'proveedor.nombre as proveedor_nombre')
         ->first(); 
 
-        $lista->empaques =  Empaque::where('empaque.lista_empaques_id', $id)
+        $lista->empaques =  Empaque::where('empaque.empresa_id', $empresa->id)
+            ->where('empaque.lista_empaques_id', $id)
             ->join('lista_empaques', 'empaque.lista_empaques_id', '=', 'lista_empaques.id')
             ->join('ubicacion_almacen', 'empaque.ubicacion_almacen_id', '=', 'ubicacion_almacen.id')
             ->join('almacen', 'ubicacion_almacen.almacen_id', '=', 'almacen.id')
@@ -56,13 +63,19 @@ class ListaEmpaquesController extends Controller
             ->get();
         
         
-        $empresa = Empresa::find(auth()->user()->empresa_id);
         $icono_empresa = $empresa->icono;
 
 
         return view("lista_empaques.show", ['lista'=>$lista, 'icono_empresa'=>$icono_empresa  ]);
     }
 
+    public function ver_documento($id){
+        $listaEmpaques = ListaEmpaques::find($id);
+        $documento_lista = base64_decode($listaEmpaques->documento);
+        return response($documento_lista)
+        ->header('Content-Type', 'application/pdf')
+        ->header('Content-Disposition', 'inline; filename="documento_lista_'.strtolower($listaEmpaques->codigo).'.pdf"');
+    }
     public function store(ListaEmpaquesRequest $request)
     {
         $listaEmpaques = new ListaEmpaques();
@@ -85,6 +98,12 @@ class ListaEmpaquesController extends Controller
             $listaEmpaques->observacion = null;
         }
 
+        if( isset($request->documento) ){
+            $archivo = $request->file('documento');
+            $archivo_base64String = base64_encode(file_get_contents($archivo));
+            $listaEmpaques->documento = $archivo_base64String;
+        } 
+
         $listaEmpaques->save();
 
         return redirect()->route('home');
@@ -92,7 +111,11 @@ class ListaEmpaquesController extends Controller
 
     public function update($id, ListaEmpaquesRequest $request)
     {
-        $listaEmpaques = ListaEmpaques::findOrFail($id);
+        $empresa = Empresa::find(auth()->user()->empresa_id);
+
+        $listaEmpaques = ListaEmpaques::where('id', $id)
+        ->where('empresa_id', $empresa->id)
+        ->firstOrFail();
         
         $listaEmpaques->codigo = $request->codigo;
         $listaEmpaques->canal_aduana = $request->canal_aduana;
@@ -109,6 +132,14 @@ class ListaEmpaquesController extends Controller
             $listaEmpaques->observacion = null;
         }
         
+        if( isset($request->documento) ){
+            $archivo = $request->file('documento');
+            $archivo_base64String = base64_encode(file_get_contents($archivo));
+            $listaEmpaques->documento = $archivo_base64String;
+        }elseif ($request->has('documento_eliminado')) {
+            $listaEmpaques->documento = null; 
+        }
+        
         $listaEmpaques->update();
 
         return redirect()->route('home')->with('success', 'Lista de empaques actualizada exitosamente.');
@@ -116,7 +147,9 @@ class ListaEmpaquesController extends Controller
 
     public function delete($id)
     {
-        $listaEmpaques = Empaque::where('lista_empaques_id',$id)->get();
+        $empresa = Empresa::find(auth()->user()->empresa_id);
+
+        $listaEmpaques = Empaque::where('empresa_id', $empresa->id)->where('lista_empaques_id',$id)->get();
         $tiene_movimientos = $this->tieneMovimientos($id);
         if($tiene_movimientos == false){
             foreach ($listaEmpaques as $empaque) {
@@ -131,10 +164,10 @@ class ListaEmpaquesController extends Controller
 
 
     private function tieneMovimientos($lista_empaques_id){
-
+        $empresa = Empresa::find(auth()->user()->empresa_id);
         $resultado = false;
 
-        $listaEmpaques = Empaque::where('lista_empaques_id',$lista_empaques_id)->get();
+        $listaEmpaques = Empaque::where('empresa_id', $empresa->id)->where('lista_empaques_id',$lista_empaques_id)->get();
         foreach ($listaEmpaques as $empaque) {
             $movimientos = Movimiento::where('empaque_id', $empaque->id)->count();
             if($movimientos !== null && $movimientos > 1){

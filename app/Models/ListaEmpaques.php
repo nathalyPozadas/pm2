@@ -16,6 +16,7 @@ class ListaEmpaques extends Model
     protected $fillable = [
         'codigo',
         'factura',
+        'documento',
         'canal_aduana',
         'siniestrado',
         'observacion',

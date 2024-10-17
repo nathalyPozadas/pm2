@@ -154,7 +154,7 @@
                             <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                            <form id="formRegistrarListaEmpaque" method="POST" action="{{ route('lista_empaques.store') }}">
+                            <form id="formRegistrarListaEmpaque" method="POST" action="{{ route('lista_empaques.store') }}" enctype="multipart/form-data">
                                     @csrf
                                     @method('post')
                             <div class="modal-body">
@@ -170,6 +170,19 @@
                                         <label for="input-factura" class="form-control-label">OC/Factura</label>
                                         <input type="text" name="factura" id="input-factura" class="form-control form-control-alternative" placeholder="0" required>
                                     </div>
+
+                                    <!-- Documento -->
+                                    <div class="form-group" >
+                                        <label class="form-control-label" for="input-documento">Documento</label>
+                                        <input type="file" name="documento" accept=".pdf" id="input-documento" class="form-control form-control-alternative"
+                                            onchange="mostrarPesoArchivo(this)">
+                                        
+                                        <span class="invalid-feedback" id="error-peso" role="alert">
+                                            <strong>Peso máximo 16 MB</strong>
+                                        </span>
+                                    </div>
+
+
 
                                     <!-- Transporte -->
                                     <div class="form-group">
@@ -238,7 +251,7 @@
                                     <!-- Stock de empaques que se espera -->
                                     <div class="form-group">
                                         <label for="input-stock-llegada" class="form-control-label">Stock empaques esperados</label>
-                                        <input type="number" name="stock_esperado" id="input-stock-llegada" class="form-control form-control-alternative" placeholder="0" required>
+                                        <input type="number" name="stock_esperado" id="input-stock-llegada" class="form-control form-control-alternative" placeholder="0" min="0"  required>
                                     </div>
 
                             </div>
@@ -331,7 +344,6 @@
     var lista = $(elemento).data('lista');
     console.log('itemID::::', lista.canal_aduana);
 
-    // Generar contenido del modal
     var contenidoModal = `
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -341,7 +353,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="formEditarListaEmpaque" method="POST" action="/lista_empaques/${lista.id}/update">
+                <form id="formEditarListaEmpaque" method="POST" action="/lista_empaques/${lista.id}/update" enctype="multipart/form-data" >
                     @csrf
                     @method('POST')
                     <div class="modal-body">
@@ -356,6 +368,32 @@
                         <div class="form-group">
                             <label for="input-factura" class="form-control-label">OC/Factura</label>
                             <input type="text" name="factura" id="input-factura" class="form-control form-control-alternative" value="${lista.factura}" placeholder="0" required>
+                        </div>
+
+                      
+
+                        <!-- Documento -->
+                        <div class="form-group">
+                            <label class="form-control-label" for="input-documento">Documento</label>
+                            <input type="file" name="documento" accept=".pdf" id="input-documento" class="form-control form-control-alternative "
+                                onchange="mostrarPesoArchivo(this)">
+                                
+                            <span class="invalid-feedback" id="error-peso" role="alert">
+                                <strong>Peso máximo 16 MB</strong>
+                            </span>
+
+                            <!-- Mostrar el nombre del archivo existente, si hay uno -->
+                            <div id="archivo-existente" style="display: ${lista.documento ? 'block' : 'none'};">
+                                Archivo cargado
+                                <br>
+                                <small>Puedes cargar un nuevo archivo si lo deseas.</small>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="checkbox" name="documento_eliminado" id="eliminar-documento" class="form-check-input">
+                                <label class="form-check-label" for="eliminar-documento">Eliminar archivo existente</label>
+                            </div>
+
                         </div>
 
                         <!-- Transporte -->
@@ -706,6 +744,28 @@
                 cantidadCajasGroup.style.display = 'none'; // Ocultar en otros casos
             }
         }
+
+        function mostrarPesoArchivo(input) {
+            var pesoMaximoMB = 16;
+            var inputArchivo = input;
+            
+            // Ocultar error inicialmente
+            document.getElementById('error-peso').style.display = 'none';
+            inputArchivo.classList.remove('is-invalid');
+
+            if (inputArchivo.files.length > 0) {
+                var pesoArchivo = inputArchivo.files[0].size; 
+                var pesoMegabytes = pesoArchivo / (1024 * 1024); // Convertir a MB
+
+                if (pesoMegabytes > pesoMaximoMB) {
+                    document.getElementById('error-peso').style.display = 'block';
+                    inputArchivo.classList.add('is-invalid');
+                    
+                    inputArchivo.value = "";
+                }
+            }
+        }
+
     </script>
 
 @endpush

@@ -19,8 +19,10 @@ class EmpaqueController extends Controller
     public function index()
     {
         //$empresa_id = obtener_empresa();
-        
-        $empaques = Empaque::join('lista_empaques', 'empaque.lista_empaques_id', '=', 'lista_empaques.id')
+        $empresa = Empresa::find(auth()->user()->empresa_id);
+
+        $empaques = Empaque::where('empaque.empresa_id','=', $empresa->id)
+            ->join('lista_empaques', 'empaque.lista_empaques_id', '=', 'lista_empaques.id')
             ->join('ubicacion_almacen', 'empaque.ubicacion_almacen_id', '=', 'ubicacion_almacen.id')
             ->join('almacen', 'ubicacion_almacen.almacen_id', '=', 'almacen.id')
             ->select('empaque.*', 'lista_empaques.codigo as empaque_lista_empaque_codigo', 'almacen.nombre as empaque_almacen_nombre', 'ubicacion_almacen.nombre as empaque_ubicacion_nombre')
@@ -38,14 +40,14 @@ class EmpaqueController extends Controller
         
         
 
-        $almacenes = Almacen::all();
+        $almacenes = Almacen::where('empresa_id', $empresa->id)->get();
         foreach ($almacenes as $almacen) {
             $almacen->ubicaciones = UbicacionAlmacen::where('ubicacion_almacen.almacen_id', $almacen->id)
                 ->whereNull('ubicacion_almacen.deleted_at')
                 ->get();
         }
 
-        $empresa = Empresa::find(auth()->user()->empresa_id);
+        
         $icono_empresa = $empresa->icono;
 
         $listas = ListaEmpaques::all();

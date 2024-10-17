@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MovimientoRequest;
 use App\Models\Empaque;
+use App\Models\Empresa;
 use App\Models\ListaEmpaques;
 use App\Models\Movimiento;
 use Illuminate\Http\Request;
@@ -12,7 +13,11 @@ class MovimientoController extends Controller
 {
     public function store(MovimientoRequest $request)
     {
-        $empaque = Empaque::find($request->empaque_id);
+        $empresa = Empresa::find(auth()->user()->empresa_id);
+        
+        $empaque = Empaque::where('empresa_id', $empresa->id)
+                ->where('id', $request->empaque_id)
+                ->firstOrFail();
 
         $movimientoEmpaque = new Movimiento();
         $movimientoEmpaque->empaque_id = $request->empaque_id;

@@ -39,6 +39,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/lista_empaques/store', ['as' => 'lista_empaques.store', 'uses' => 'App\Http\Controllers\ListaEmpaquesController@store']);
         Route::post('/lista_empaques/{id}/update', ['as' => 'lista_empaques.update', 'uses' => 'App\Http\Controllers\ListaEmpaquesController@update']);
         Route::delete('/lista_empaques/{id}/delete', ['as' => 'lista_empaques.delete', 'uses' => 'App\Http\Controllers\ListaEmpaquesController@delete']);
+        Route::get('/lista_empaques/{id}/documento_adjunto', ['as'=>'lista_empaques.documento', 'uses'=>'App\Http\Controllers\ListaEmpaquesController@ver_documento']);
     
     //EMPAQUES
         Route::get('/empaques', ['as' => 'empaque.index', 'uses' => 'App\Http\Controllers\EmpaqueController@index']);
