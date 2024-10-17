@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ListaEmpaquesRequest;
 use App\Models\Almacen;
+use App\Models\Bitacora;
 use App\Models\Empaque;
 use App\Models\Empresa;
 use App\Models\ListaEmpaques;
@@ -22,10 +23,17 @@ class ListaEmpaquesController extends Controller
         ->join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
         ->select(  'lista_empaques.id',
                             'lista_empaques.codigo',
+                            'lista_empaques.factura',
+                            'lista_empaques.canal_aduana',
+                            'lista_empaques.siniestrado',
+                            'lista_empaques.observacion',
                             'lista_empaques.proveedor_id',
                             'lista_empaques.stock_esperado',
                             'lista_empaques.stock_registrado',
                             'lista_empaques.stock_actual',
+                            'lista_empaques.fecha_recepcion',
+                            'lista_empaques.fecha_llegada',
+                            'lista_empaques.transporte',
                             'proveedor.nombre as proveedor_nombre')
         ->orderBy('lista_empaques.id', 'desc')
         ->get();
@@ -46,6 +54,7 @@ class ListaEmpaquesController extends Controller
             ->whereNull('ubicacion_almacen.deleted_at')
             ->get();
         }
+
 
         return view("lista_empaques.index", ['listas'=>$listas, 'icono_empresa'=>$icono_empresa, 'proveedores'=>$proveedores , 'almacenes'=>$almacenes ]);
     }
@@ -84,88 +93,165 @@ class ListaEmpaquesController extends Controller
     }
     public function store(ListaEmpaquesRequest $request)
     {
-        $listaEmpaques = new ListaEmpaques();
-        $listaEmpaques->codigo = $request->codigo;
-        $listaEmpaques->canal_aduana = $request->canal_aduana;
-        $listaEmpaques->siniestrado  = $request->has('siniestrado') ? true : false;
-        $listaEmpaques->transporte = $request->transporte;
-        $listaEmpaques->factura = $request->factura;
-        $listaEmpaques->proveedor_id =  $request->proveedor_id;
-        $listaEmpaques->fecha_recepcion = $request->fecha_recepcion;
-        $listaEmpaques->fecha_llegada = $request->fecha_llegada;
-        $listaEmpaques->fecha_creacion = now();
-        $listaEmpaques->stock_esperado = $request->stock_esperado;
-        $listaEmpaques->encargado_id = auth()->user()->trabajador_id;
-        $listaEmpaques->empresa_id = auth()->user()->empresa_id;
+        try{
+            $listaEmpaques = new ListaEmpaques();
+            $listaEmpaques->codigo = $request->codigo;
+            $listaEmpaques->canal_aduana = $request->canal_aduana;
+            $listaEmpaques->siniestrado  = $request->has('siniestrado') ? true : false;
+            $listaEmpaques->transporte = $request->transporte;
+            $listaEmpaques->factura = $request->factura;
+            $listaEmpaques->proveedor_id =  $request->proveedor_id;
+            $listaEmpaques->fecha_recepcion = $request->fecha_recepcion;
+            $listaEmpaques->fecha_llegada = $request->fecha_llegada;
+            $listaEmpaques->fecha_creacion = now();
+            $listaEmpaques->stock_esperado = $request->stock_esperado;
+            $listaEmpaques->encargado_id = auth()->user()->trabajador_id;
+            $listaEmpaques->empresa_id = auth()->user()->empresa_id;
 
-        if($listaEmpaques->siniestrado){
-            $listaEmpaques->observacion = $request->observacion;
-        }else{
-            $listaEmpaques->observacion = null;
+            if($listaEmpaques->siniestrado){
+                $listaEmpaques->observacion = $request->observacion;
+            }else{
+                $listaEmpaques->observacion = null;
+            }
+
+            $subioArchivo = false;
+            if( isset($request->documento) ){
+                $archivo = $request->file('documento');
+                $archivo_base64String = base64_encode(file_get_contents($archivo));
+                $listaEmpaques->documento = $archivo_base64String;
+                $subioArchivo = true; 
+            } 
+
+            $listaEmpaques->save();
+
+            Bitacora::create([
+                'user_id' => auth()->user()->id,
+                'evento' => 'Creación de Lista de Empaques',
+                'descripcion' => 'ListaEmpaque: '.$listaEmpaques->id.'Código: ' . $listaEmpaques->codigo . ' registrado correctamente. ' . ($subioArchivo ? 'Archivo adjunto.' : 'Sin archivo.'),
+                'empresa_id' => auth()->user()->empresa_id,
+                'tipo_evento' => 'info'
+            ]);
+
+            return redirect()->route('home');
+        }catch (\Exception $e) {
+            // Registro de error en la Bitácora
+            Bitacora::create([
+                'user_id' => auth()->user()->id,
+                'evento' => 'Error al registrar Lista de Empaques',
+                'descripcion' => 'Error: ' . $e->getMessage(),
+                'empresa_id' => auth()->user()->empresa_id,
+                'tipo_evento' => 'error'
+            ]);
+    
+            // Retornar con un error a la vista o manejar el error
+            return redirect()->back()->withErrors('Hubo un problema al registrar el ListaEmpaques.');
         }
-
-        if( isset($request->documento) ){
-            $archivo = $request->file('documento');
-            $archivo_base64String = base64_encode(file_get_contents($archivo));
-            $listaEmpaques->documento = $archivo_base64String;
-        } 
-
-        $listaEmpaques->save();
-
-        return redirect()->route('home');
     }
 
     public function update($id, ListaEmpaquesRequest $request)
     {
-        $empresa = Empresa::find(auth()->user()->empresa_id);
+        try {
+            $empresa = Empresa::find(auth()->user()->empresa_id);
 
-        $listaEmpaques = ListaEmpaques::where('id', $id)
-        ->where('empresa_id', $empresa->id)
-        ->firstOrFail();
+            $listaEmpaques = ListaEmpaques::where('id', $id)
+            ->where('empresa_id', $empresa->id)
+            ->firstOrFail();
+            
+            $listaEmpaques->codigo = $request->codigo;
+            $listaEmpaques->canal_aduana = $request->canal_aduana;
+            $listaEmpaques->siniestrado  = $request->has('siniestrado') ? true : false;
+            $listaEmpaques->transporte = $request->transporte;
+            $listaEmpaques->factura = $request->input('factura');
+            $listaEmpaques->proveedor_id = $request->input('proveedor_id');
+            $listaEmpaques->fecha_recepcion = $request->input('fecha_recepcion');
+            $listaEmpaques->stock_esperado = $request->input('stock_esperado');
+
+            if($listaEmpaques->siniestrado){
+                $listaEmpaques->observacion = $request->observacion;
+            }else{
+                $listaEmpaques->observacion = null;
+            }
+
+            $subioArchivo = false;
+            $eliminoArchivo = false;
+            
+            if( isset($request->documento) ){
+                $archivo = $request->file('documento');
+                $archivo_base64String = base64_encode(file_get_contents($archivo));
+                $listaEmpaques->documento = $archivo_base64String;
+                $subioArchivo = true;
+
+            }elseif ($request->has('documento_eliminado')) {
+                $listaEmpaques->documento = null; 
+                $eliminoArchivo = true;
+            }
+            
+            $listaEmpaques->update();
+
+            Bitacora::create([
+                'user_id' => auth()->user()->id,
+                'evento' => 'Actualización de Lista de Empaques',
+                'descripcion' => 'Se actualizó la Lista de Empaques con ID: ' . $listaEmpaques->id
+                    . ($subioArchivo ? ' con archivo subido.' : ($eliminoArchivo ? ' con archivo eliminado.' : ' sin cambios en el archivo.')),
+                'empresa_id' => auth()->user()->empresa_id,
+                'tipo_evento' => 'info'
+            ]);
+
+            return redirect()->route('home')->with('success', 'Lista de empaques actualizada exitosamente.');
         
-        $listaEmpaques->codigo = $request->codigo;
-        $listaEmpaques->canal_aduana = $request->canal_aduana;
-        $listaEmpaques->siniestrado  = $request->has('siniestrado') ? true : false;
-        $listaEmpaques->transporte = $request->transporte;
-        $listaEmpaques->factura = $request->input('factura');
-        $listaEmpaques->proveedor_id = $request->input('proveedor_id');
-        $listaEmpaques->fecha_recepcion = $request->input('fecha_recepcion');
-        $listaEmpaques->stock_esperado = $request->input('stock_esperado');
+        } catch (\Exception $e) {
 
-        if($listaEmpaques->siniestrado){
-            $listaEmpaques->observacion = $request->observacion;
-        }else{
-            $listaEmpaques->observacion = null;
+            Bitacora::create([
+                'user_id' => auth()->user()->id,
+                'evento' => 'Error al actualizar Lista de Empaques',
+                'descripcion' => 'Error: ' . $e->getMessage(),
+                'empresa_id' => auth()->user()->empresa_id,
+                'tipo_evento' => 'error'
+            ]);
+    
+            // Manejo del error
+            return redirect()->back()->withErrors('Hubo un problema al actualizar la ListaEmpaques.');
         }
-        
-        if( isset($request->documento) ){
-            $archivo = $request->file('documento');
-            $archivo_base64String = base64_encode(file_get_contents($archivo));
-            $listaEmpaques->documento = $archivo_base64String;
-        }elseif ($request->has('documento_eliminado')) {
-            $listaEmpaques->documento = null; 
-        }
-        
-        $listaEmpaques->update();
-
-        return redirect()->route('home')->with('success', 'Lista de empaques actualizada exitosamente.');
     }
 
     public function delete($id)
     {
-        $empresa = Empresa::find(auth()->user()->empresa_id);
+        try {
+            $empresa = Empresa::find(auth()->user()->empresa_id);
 
-        $listaEmpaques = Empaque::where('empresa_id', $empresa->id)->where('lista_empaques_id',$id)->get();
-        $tiene_movimientos = $this->tieneMovimientos($id);
-        if($tiene_movimientos == false){
-            foreach ($listaEmpaques as $empaque) {
-                $empaque->delete(); 
+            $listaEmpaques = Empaque::where('empresa_id', $empresa->id)->where('lista_empaques_id',$id)->get();
+            $tiene_movimientos = $this->tieneMovimientos($id);
+            if($tiene_movimientos == false){
+                foreach ($listaEmpaques as $empaque) {
+                    $empaque->delete(); 
+                }
+                $lista = ListaEmpaques::find($id);
+                $lista->delete();
+
+                Bitacora::create([
+                    'user_id' => auth()->user()->id,
+                    'evento' => 'Eliminación de Lista de Empaques',
+                    'descripcion' => 'Se eliminó la Lista de Empaques con ID: ' . $id,
+                    'empresa_id' => auth()->user()->empresa_id,
+                    'tipo_evento' => 'info'
+                ]);
             }
-            $lista = ListaEmpaques::find($id);
-            $lista->delete();
+            
+            return redirect()->route('home')->with('success', 'Lista de empaques eliminada correctamente.');
+            
+        } catch (\Exception $e) {
+            // Registro de error en la Bitácora
+            Bitacora::create([
+                'user_id' => auth()->user()->id,
+                'evento' => 'Error al eliminar Lista de Empaques',
+                'descripcion' => 'Error al eliminar la Lista de Empaques con ID: ' . $id . ' - Error: ' . $e->getMessage(),
+                'empresa_id' => auth()->user()->empresa_id,
+                'tipo_evento' => 'error'
+            ]);
+    
+            // Manejo del error
+            return redirect()->back()->withErrors('Hubo un problema al eliminar la Lista de Empaques.');
         }
-        
-        return redirect()->route('home')->with('success', 'Lista de empaques eliminada correctamente.');
     }
 
 

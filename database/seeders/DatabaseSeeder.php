@@ -37,6 +37,18 @@ class DatabaseSeeder extends Seeder
         ]);
 
         
+        $encargado_sistemas = Trabajador::create([
+            'nombres' => 'Usuario',
+            'apellidos' => 'Sistemas',
+            'fecha_nacimiento' => '2024-06-05',
+            'cargo' => 'encargado almacen',
+            'telefono' => '67832810',
+            'direccion' => 'Av Santa Cruz nro 125',
+            'ci' => '8575455',
+            'sexo' => 'M',
+            'empresa_id' => $empresa->id
+        ]);
+
         $trabajador = Trabajador::create([
             'nombres' => 'Usuario',
             'apellidos' => 'Rodriguez',
@@ -83,10 +95,20 @@ class DatabaseSeeder extends Seeder
             'empresa_id' => $empresa->id
         ]);
 
+        $user_sistemas = User::create([
+            'email' => 'sistemas@admin.com',
+            'email_verified_at' => now(),
+            'password' => Hash::make('pallet1478965'),
+            'created_at' => now(),
+            'updated_at' => now(),
+            'trabajador_id' => $encargado_sistemas,
+            'empresa_id' => $empresa->id
+        ]);
+
        $usuario2 = User::create([
             'email' => 'jrodriguez@perbol.com.bo',
             'email_verified_at' => now(),
-            'password' => Hash::make('jrodriguez'),
+            'password' => Hash::make('jr96000'),
             'created_at' => now(),
             'updated_at' => now(),
             'trabajador_id' => $trabajador->id,
@@ -96,7 +118,7 @@ class DatabaseSeeder extends Seeder
         $usuario3 = User::create([
             'email' => 'administracion@perbol.com.bo',
             'email_verified_at' => now(),
-            'password' => Hash::make('administracion'),
+            'password' => Hash::make('adm55000'),
             'created_at' => now(),
             'updated_at' => now(),
             'trabajador_id' => $trabajador1->id,
@@ -106,7 +128,7 @@ class DatabaseSeeder extends Seeder
         $usuario4 = User::create([
             'email' => 'almacenwarnes@perbol.com.bo',
             'email_verified_at' => now(),
-            'password' => Hash::make('almacenwarnes'),
+            'password' => Hash::make('almacen14000'),
             'created_at' => now(),
             'updated_at' => now(),
             'trabajador_id' => $trabajador2->id,
@@ -116,7 +138,7 @@ class DatabaseSeeder extends Seeder
         $usuario5 = User::create([
             'email' => 'kareminfantas@perbol.com.bo',
             'email_verified_at' => now(),
-            'password' => Hash::make('kareminfantas'),
+            'password' => Hash::make('karem124000'),
             'created_at' => now(),
             'updated_at' => now(),
             'trabajador_id' => $trabajador3->id,
@@ -205,7 +227,7 @@ class DatabaseSeeder extends Seeder
             'empresa_id' => $empresa->id
         ]);
         
-
+        /*
         $listaEmpaques1 = ListaEmpaques::create([
             'codigo' => '20JA-02',
             'factura' => '12345678',
@@ -285,7 +307,7 @@ class DatabaseSeeder extends Seeder
             'ubicacion_destino_id' => $configuracion->ubicacion_default,
             'empresa_id'=>$empresa->id
         ]);
-
+        */
 
         
     }

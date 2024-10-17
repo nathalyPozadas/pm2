@@ -69,12 +69,19 @@ class ReportesController extends Controller
         })
         ->where('lista_empaques.empresa_id', auth()->user()->empresa_id)
         ->join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
-        ->select('lista_empaques.id',
+        ->select(  'lista_empaques.id',
                             'lista_empaques.codigo',
+                            'lista_empaques.factura',
+                            'lista_empaques.canal_aduana',
+                            'lista_empaques.siniestrado',
+                            'lista_empaques.observacion',
                             'lista_empaques.proveedor_id',
                             'lista_empaques.stock_esperado',
                             'lista_empaques.stock_registrado',
                             'lista_empaques.stock_actual',
+                            'lista_empaques.fecha_recepcion',
+                            'lista_empaques.fecha_llegada',
+                            'lista_empaques.transporte',
                             'proveedor.nombre as proveedor_nombre')
         ->orderBy('lista_empaques.id', 'desc')
         ->get();
@@ -160,12 +167,19 @@ class ReportesController extends Controller
         })
         ->where('lista_empaques.empresa_id', auth()->user()->empresa_id)
         ->join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
-        ->select(  'lista_empaques.id',
+        ->select(   'lista_empaques.id',
                             'lista_empaques.codigo',
+                            'lista_empaques.factura',
+                            'lista_empaques.canal_aduana',
+                            'lista_empaques.siniestrado',
+                            'lista_empaques.observacion',
                             'lista_empaques.proveedor_id',
                             'lista_empaques.stock_esperado',
                             'lista_empaques.stock_registrado',
                             'lista_empaques.stock_actual',
+                            'lista_empaques.fecha_recepcion',
+                            'lista_empaques.fecha_llegada',
+                            'lista_empaques.transporte',
                             'proveedor.nombre as proveedor_nombre')
         ->orderBy('lista_empaques.id', 'desc')
         ->get();
