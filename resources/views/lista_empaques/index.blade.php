@@ -35,7 +35,7 @@
                     <table id="tablaListaEmpaques" class="table align-items-center table-flush table-striped">
                         <thead class="thead-light">
                             <tr>
-                                <th scope="col">N°</th>
+                                <th scope="col">#</th>
                                 <th scope="col">Lista de empaque</th>
                                 <th scope="col">Proveedor</th>
                                 <th scope="col">Stock Esperado</th>
@@ -162,7 +162,7 @@
                                     <!-- Codigo Lista de Empaque -->
                                     <div class="form-group">
                                         <label for="input-lista-empaque" class="form-control-label">Lista de empaque</label>
-                                        <input type="text" name="codigo" id="input-lista-empaque" class="form-control form-control-alternative" placeholder="0" required>
+                                        <input type="text" name="codigo" id="input-lista-empaque" class="form-control form-control-alternative" placeholder="0" required style="text-transform: uppercase;">
                                     </div>
 
                                     <!-- OC/Factura -->
@@ -359,7 +359,7 @@
                         <!-- Codigo Lista de Empaque -->
                         <div class="form-group">
                             <label for="input-lista-empaque" class="form-control-label">Lista de Empaque</label>
-                            <input type="text" name="codigo" id="input-lista-empaque" class="form-control form-control-alternative" placeholder="0" value="${lista.codigo}" required>
+                            <input type="text" name="codigo" id="input-lista-empaque" class="form-control form-control-alternative" placeholder="0" value="${lista.codigo}" required style="text-transform: uppercase;">
                         </div>
 
                         <!-- OC/Factura -->
@@ -641,15 +641,18 @@
                                     <!-- Peso -->
                                     <div class="form-group ">
                                         <label for="input-peso" class="form-control-label">Peso</label>
-                                        <div class="row">
+                                        <div class="row pl-3">
+
                                             <input type="number" name="peso" id="input-peso" class="form-control form-control-alternative col-3" placeholder="0" onchange="toggleUnidadMedida()">
-                                            <select name="unidad_medida" id="input-unidad_medida" class="form-control form-control-alternative col-3" >
+                                            <select name="unidad_medida" id="input-unidad_medida" class="form-control form-control-alternative col-4" >
                                                 <option value="" selected >Seleccione</option>
                                                 <option value="kilo">Kg</option>
                                             </select>
                                         </div>    
                                     </div>
 
+                                    
+                                    
                                     <!-- Descripcion -->
                                     <div class="form-group">
                                         <label for="input-descripcion" class="form-control-label">Descripción</label>

@@ -95,7 +95,7 @@ class ListaEmpaquesController extends Controller
     {
         try{
             $listaEmpaques = new ListaEmpaques();
-            $listaEmpaques->codigo = $request->codigo;
+            $listaEmpaques->codigo = strtoupper($request->codigo);
             $listaEmpaques->canal_aduana = $request->canal_aduana;
             $listaEmpaques->siniestrado  = $request->has('siniestrado') ? true : false;
             $listaEmpaques->transporte = $request->transporte;
@@ -157,7 +157,7 @@ class ListaEmpaquesController extends Controller
             ->where('empresa_id', $empresa->id)
             ->firstOrFail();
             
-            $listaEmpaques->codigo = $request->codigo;
+            $listaEmpaques->codigo = strtoupper($request->codigo);
             $listaEmpaques->canal_aduana = $request->canal_aduana;
             $listaEmpaques->siniestrado  = $request->has('siniestrado') ? true : false;
             $listaEmpaques->transporte = $request->transporte;

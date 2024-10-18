@@ -190,11 +190,13 @@
                                     <!-- Peso -->
                                     <div class="form-group">
                                         <label for="input-peso" class="form-control-label">Peso</label>
-                                        <input type="number" name="peso" id="input-peso" class="form-control form-control-alternative" placeholder="0" onchange="toggleUnidadMedida()">
-                                        <select name="unidad_medida" id="input-unidad_medida" class="form-control form-control-alternative" >
-                                            <option value="" selected >Seleccione unidad medida</option>
-                                            <option value="kilo">Kg</option>
-                                        </select>
+                                        <div class="row pl-3">
+                                            <input type="number" name="peso" id="input-peso" class="form-control form-control-alternative col-lg-3 col-md-4" placeholder="0" onchange="toggleUnidadMedida()">
+                                            <select name="unidad_medida" id="input-unidad_medida" class="form-control form-control-alternative col-lg-4 col-md-4" >
+                                                <option value="" selected >Seleccione unidad medida</option>
+                                                <option value="kilo">Kg</option>
+                                            </select>
+                                        </div>
                                     </div>
 
                                     <!-- Descripcion -->
@@ -333,11 +335,13 @@
                                     <!-- Peso -->
                                     <div class="form-group" "${empaque.tipo == 'pallet' ? 'hide' : '' }">
                                         <label for="input-peso" class="form-control-label">Peso</label>
-                                        <input type="number" name="peso" id="input-peso" class="form-control form-control-alternative" placeholder="0" onchange="toggleUnidadMedida()" value=${empaque.peso}>
-                                        <select name="unidad_medida" id="input-unidad_medida" class="form-control form-control-alternative" >
-                                            <option value="" selected >Seleccione</option>
-                                            <option value="kilo" ${empaque.unidad_medida=='kilo'? 'selected': ''}>Kg</option>
-                                        </select>
+                                        <div class="row pl-3">
+                                            <input type="number" name="peso" id="input-peso" class="form-control form-control-alternative col-lg-3 col-md-4" placeholder="0" onchange="toggleUnidadMedida()" value=${empaque.peso}>
+                                            <select name="unidad_medida" id="input-unidad_medida" class="form-control form-control-alternative col-lg-4 col-md-4" >
+                                                <option value="" selected >Seleccione unidad medida</option>
+                                                <option value="kilo" ${empaque.unidad_medida=='kilo'? 'selected': ''}>Kg</option>
+                                            </select>
+                                        </div>
                                     </div>
 
                                     <!-- Descripcion -->

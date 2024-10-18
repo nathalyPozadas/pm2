@@ -44,7 +44,8 @@
                                     <label class="form-control-label"
                                         for="input-email">{{ __('Fecha de recepción') }}</label>
                                     <br>
-                                    <span class="description">{{ $lista->fecha_recepcion }}</span>
+                                    <span class="description">{{ \Carbon\Carbon::parse($lista->fecha_recepcion)->format('d-m-Y') }}</span>
+
                                 </div>
                                 <div class="form-group mx-3 mb-3">
                                     <label class="form-control-label" for="input-email">{{ __('OC/Factura') }}</label>
