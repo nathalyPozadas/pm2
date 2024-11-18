@@ -8,6 +8,10 @@
     <link href="{{ asset('dataTables') }}/datatables.min.css" rel="stylesheet">
     <script src="{{ asset('dataTables') }}/datatables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.5/dist/bootstrap-table.min.css">
+
 @endpush
 
 @section('content')
@@ -18,14 +22,14 @@
                 <div class="card-header border-0">
                     <div class="row align-items-center">
                         <div class="col-md-6">
-                            <h3 class="mb-0">Reporte Empaques</h3>
+                            <h3 class="mb-0">Reporte Empaques Detallado</h3>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-12">
                     <div class="card-body">
-                        <form action="{{ route('reporte.empaques') }}" method="POST">
+                        <form action="{{ route('reporte.empaques_movimiento') }}" method="POST">
                             @csrf
                             <div class="row">
                                 <!-- Fechas y filtros -->
@@ -77,7 +81,7 @@
 
                         <!-- Tablas -->
                         <div class="table-responsive px-4">
-                            @foreach($listas as $lista)
+                            @foreach($listas as $index => $lista)
                                 <div class="row mt-4">
                                     <div class="col-lg-9">
                                         <div class="d-flex flex-wrap">
@@ -100,33 +104,8 @@
                                     </div>
                                 </div>
 
-                                <table id="tablaDetalle" class="table align-items-center table-flush">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Lista de Empaque</th>
-                                            <th>No Empaque</th>
-                                            <th>Tipo de empaque</th>
-                                            <th>Descripción</th>
-                                            <th>Peso</th>
-                                            <th>Ub. Anterior</th>
-                                            <th>Ub. Actual</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($lista->contenido as $empaque)
-                                            <tr>
-                                                <td>{{$empaque->id}}</td>
-                                                <td>{{$empaque->lista_empaque_codigo}}</td>
-                                                <td>{{$empaque->numero}}</td>
-                                                <td>{{$empaque->tipo}}</td>
-                                                <td>{{$empaque->descripcion}}</td>
-                                                <td>{{$empaque->peso}} {{$empaque->unidad_medida}}</td>
-                                                <td>{{$empaque->ub_anterior}}</td>
-                                                <td>{{$empaque->empaque_almacen}} > {{$empaque->empaque_ubicacion}}</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
+                                <table id="tablaDetalle-{{ $index }}" class="table align-items-center table-flush"></table>
+                                    
                                 </table>
                             @endforeach
                         </div>
@@ -144,66 +123,145 @@
 @endsection
 
 @push('js')
-<script>
-document.getElementById('exportarExcel').addEventListener('click', function() {
-    var button = this;
-    var originalContent = button.innerHTML;
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.5/dist/bootstrap-table.min.js"></script>
 
-    // Deshabilitar botón y mostrar spinner
-    button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generando...';
-    button.disabled = true;
+    <script>
+    var data = @json($listas);
+    console.log(data);
 
-    // Obtener los valores de las variables de PHP que vinieron con la vista
-    var proveedor_id = '{{ $proveedor_id }}';
-    var fechaInicio = '{{ $fecha_inicio }}';
-    var fechaFin = '{{ $fecha_fin }}';
-    var almacen_id = '{{ $almacen_id }}'; // Si también estás manejando almacén
+    var $table = $('#tablaDetalle');
 
-    // Realizar solicitud AJAX con Fetch API
-    fetch('{{ route("reporte.empaques.excel") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Incluir token CSRF
-        },
-        body: JSON.stringify({
-            proveedor_id: proveedor_id,
-            fechaInicio: fechaInicio,
-            fechaFin: fechaFin,
-            almacen_id: almacen_id
-        })
-    })
-    .then(response => {
-        // Verificar si la respuesta es exitosa
-        if (response.ok) {
-            return response.blob(); // Convertir la respuesta en un objeto Blob (archivo)
-        } else {
-            throw new Error('Error al generar el reporte');
-        }
-    })
-    .then(blob => {
-        // Crear un enlace temporal para descargar el archivo
-        var downloadUrl = window.URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = 'reporte_empaques_' + new Date().toISOString().slice(0, 10) + '.xlsx';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        
-        // Restaurar el botón
-        button.innerHTML = originalContent;
-        button.disabled = false;
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Hubo un problema al generar el reporte.');
-
-        // Restaurar el botón en caso de error
-        button.innerHTML = originalContent;
-        button.disabled = false;
+    $(function () {
+        data.forEach(function (item, index) {
+            var $table = $(`#tablaDetalle-${index}`);
+            buildTable($table, item);
+        });
     });
-});
+
+    function buildTable($el, data) {
+        var columns = [
+           // { field: 'id', title: '#', sortable: true },
+            { field: 'lista_empaque_codigo', title: 'Lista de Empaque', sortable: true },
+            { field: 'numero', title: 'Numero', sortable: true },
+            { field: 'tipo', title: 'Tipo', sortable: true },
+            { field: 'descripcion', title: 'Descripcion', sortable: true },
+            {
+                title: 'Peso', // Título personalizado
+                formatter: function (value, row, index) {
+                    var peso = row.peso || ''; // Usa cadena vacía si no existe
+                    var unidadMedida = row.unidad_medida || ''; // Usa cadena vacía si no existe
+
+                    // Si ambos son vacíos, retorna una cadena vacía
+                    if (!peso && !unidadMedida) {
+                        return '';
+                    }
+
+                    // Concatenar peso y unidad de medida con un espacio
+                    return `${peso} ${unidadMedida}`;
+                },
+                sortable: true // Permitir ordenamiento
+            },
+            {
+                title: 'Ubicación', // Título personalizado
+                formatter: function (value, row, index) {
+                    var almacen = row.empaque_almacen || ''; // Usa cadena vacía si no existe
+                    var ubicacion = row.empaque_ubicacion || ''; // Usa cadena vacía si no existe
+
+                    // Si ambos son vacíos, retorna una cadena vacía
+                    if (!almacen && !ubicacion) {
+                        return '';
+                    }
+
+                    // Concatenar con `>`
+                    return `${almacen} > ${ubicacion}`;
+                },
+                sortable: true // Permitir ordenamiento
+            }
+        ];
+
+
+        $el.bootstrapTable({
+            columns: columns,
+            data: data.contenido || [],
+            detailView: true, // Activa el detalle para filas expandibles.
+            onExpandRow: function (index, row, $detail) {
+                expandTable($detail, row);
+            }
+        });
+    }
+
+    function expandTable($detail, row) {
+    // Crea una tabla hija dentro del detalle de la fila
+    $detail.html('<table></table>').find('table').bootstrapTable({
+        columns: [
+            {   field: 'fecha', 
+                title: 'Fecha', 
+                sortable: true,
+                formatter: function (value) {
+                    if (!value) return ''; // Si la fecha es nula, retorna vacío
+                    // Formatear fecha en día-mes-año
+                    const date = new Date(value);
+                    const day = date.getDate().toString().padStart(2, '0');
+                    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Meses van de 0 a 11
+                    const year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                }
+
+            },
+            { field: 'hora', title: 'Hora', sortable: false },
+            { field: 'trabajador', title: 'Trabajador', sortable: false },
+            {
+                title: 'Tipo',
+                formatter: function (value, row) {
+                    const almacenOrigen = row.almacen_origen_nombre;
+                    const almacenDestino = row.almacen_destino_nombre;
+
+                    if (!almacenOrigen && almacenDestino) {
+                        return 'Ingreso'; // Almacén Origen es nulo
+                    }
+                    if (almacenOrigen && almacenDestino) {
+                        return 'Mov Interno'; // Ambos tienen valores
+                    }
+                    if (almacenOrigen && !almacenDestino) {
+                        return 'Externo'; // Almacén Origen tiene valor, Almacén Destino no
+                    }
+                    return ''; // Caso por defecto si ambos son nulos (opcional)
+                },
+                sortable: false
+            },
+            {
+                title: 'Ubicación Origen',
+                formatter: function (value, row, index) {
+                    var almacenOrigen = row.almacen_origen_nombre || ''; // Valor o cadena vacía
+                    var ubicacionOrigen = row.ubicacion_origen_nombre || ''; // Valor o cadena vacía
+
+                    if (!almacenOrigen && !ubicacionOrigen) {
+                        return ''; // Si ambos son nulos, retornar vacío
+                    }
+                    return `${almacenOrigen} > ${ubicacionOrigen}`; // Concatenar valores
+                },
+                sortable: false
+            },
+            {
+                title: 'Ubicación Destino',
+                formatter: function (value, row, index) {
+                    var almacenDestino = row.almacen_destino_nombre || ''; // Valor o cadena vacía
+                    var ubicacionDestino = row.ubicacion_destino_nombre || ''; // Valor o cadena vacía
+
+                    if (!almacenDestino && !ubicacionDestino) {
+                        return ''; // Si ambos son nulos, retornar vacío
+                    }
+                    return `${almacenDestino} > ${ubicacionDestino}`; // Concatenar valores
+                },
+                sortable: false
+            }
+        ],
+        data: row.movimientos || [] // Datos de la subtabla
+    });
+}
 
 </script>
+
 @endpush

@@ -620,6 +620,12 @@
                                     <!-- Lista empaques ID -->
                                      <input type="number" name="lista_empaques_id" value=${lista_empaques_id} id="input-lista_empaques_id" class="form-control form-control-alternative d-none">
                                     
+                                    <!-- Numero -->
+                                    <div class="form-group">
+                                        <label for="input-numero" class="form-control-label">Número</label>
+                                        <input type="text" name="numero" id="input-numero" class="form-control form-control-alternative" placeholder="" >
+                                    </div>
+
                                     <!-- Tipo de empaque -->
                                     <div class="form-group">
                                         <label for="input-tipo" class="form-control-label">Tipo de empaque</label>
@@ -673,23 +679,23 @@
                                     <!-- Observacion -->
                                     <div class="form-group">
                                         <label for="input-observacion" class="form-control-label">Observación</label>
-                                        <input type="text" name="observacion" id="input-observacion" class="form-control form-control-alternative" placeholder="" >
+                                        <input type="text" name="observacion_estado" id="input-observacion" class="form-control form-control-alternative" placeholder="" >
                                     </div>
 
                                     <!-- Criterio 1 -->
-                                    <div class="custom-control custom-checkbox">
+                                    <div class="custom-control custom-checkbox d-none" >
                                         <input type="checkbox" class="custom-control-input" id="criterio1" name="criterio1">
                                         <label class="custom-control-label" for="criterio1">Criterio 1</label>
                                     </div>
 
                                     <!-- Criterio 1 -->
-                                    <div class="custom-control custom-checkbox">
+                                    <div class="custom-control custom-checkbox d-none">
                                         <input type="checkbox" class="custom-control-input" id="criterio2" name="criterio2">
                                         <label class="custom-control-label" for="criterio2">Criterio 2</label>
                                     </div>
 
                                     <!-- Criterio 3 -->
-                                    <div class="custom-control custom-checkbox">
+                                    <div class="custom-control custom-checkbox d-none">
                                         <input type="checkbox" class="custom-control-input" id="criterio3" name="criterio3">
                                         <label class="custom-control-label" for="criterio3">Criterio 2</label>
                                     </div>

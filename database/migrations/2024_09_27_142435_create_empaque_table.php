@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('descripcion')->nullable();
             $table->string('estado');
             $table->string('tipo');
-            $table->integer('numero');
+            $table->string('numero');
             $table->integer('cantidad_cajas')->nullable();
             $table->text('observacion_estado')->nullable();
             $table->unsignedBigInteger('lista_empaques_id');

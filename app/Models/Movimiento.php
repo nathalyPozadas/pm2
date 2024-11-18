@@ -26,4 +26,21 @@ class Movimiento extends Model
         'usuario_id',
         'empresa_id'
     ];
+
+    public function trabajador()
+    {
+        return $this->belongsTo(Trabajador::class, 'encargado_id');
+    }
+    
+    
+    public function ubicacionOrigen()
+    {
+        return $this->belongsTo(UbicacionAlmacen::class, 'ubicacion_origen_id');
+    }
+
+    public function ubicacionDestino()
+    {
+        return $this->belongsTo(UbicacionAlmacen::class, 'ubicacion_destino_id');
+    }
+
 }

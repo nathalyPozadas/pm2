@@ -60,11 +60,10 @@ class EmpaqueController extends Controller
     public function store(Request $request)
     {
         try {
-            $cantidadEmpaques = Empaque::where('lista_empaques_id', $request->lista_empaques_id)->count();
 
             $empaque = new Empaque();
             $empaque->tipo = $request->tipo;
-            $empaque->numero = $cantidadEmpaques + 1;
+            $empaque->numero = $request->numero;
             $empaque->cantidad_cajas = $request->cantidad_cajas;
             $empaque->peso = $request->peso;
             $empaque->unidad_medida = $request->unidad_medida;
@@ -133,6 +132,7 @@ class EmpaqueController extends Controller
         try {
             $empaque = Empaque::findOrFail($id);
             
+            $empaque->numero = $request->numero;
             $empaque->tipo = $request->tipo;
             $empaque->cantidad_cajas = $request->cantidad_cajas;
             $empaque->peso = $request->peso;
@@ -143,8 +143,9 @@ class EmpaqueController extends Controller
             $empaque->criterio1 = $request->has('criterio1') ? true : false;
             $empaque->criterio2 = $request->has('criterio2') ? true : false;
             $empaque->criterio3 = $request->has('criterio3') ? true : false;
-            $empaque->update();
 
+            $empaque->update();
+            
             Bitacora::create([
                 'user_id' => auth()->user()->id,
                 'evento' => 'Actualización de Empaque',

@@ -21,4 +21,10 @@ class UbicacionAlmacen extends Model
         'almacen_id',
         'empresa_id'
     ];
+
+
+    public function almacen()
+    {
+        return $this->belongsTo(Almacen::class);
+    }
 }

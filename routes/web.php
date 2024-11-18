@@ -61,7 +61,17 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::post('/reporteEmpaquesExcel', ['as' => 'reporte.empaques.excel', 'uses' => 'App\Http\Controllers\ReportesController@reporteEmpaquesExcel']);
         Route::post('/reporteListasExcel', ['as' => 'reporte.listas.excel', 'uses' => 'App\Http\Controllers\ReportesController@reporteListasExcel']);
+
+        //reporte.empaques_movimiento
+        Route::get('/reporte_empaques_detallado', ['as' => 'reporte.empaques_movimiento', 'uses' => 'App\Http\Controllers\ReportesController@reporteEmpaquesDetallado']);
+        Route::post('/reporte_empaques_detallado', ['as' => 'reporte.empaques_movimiento', 'uses' => 'App\Http\Controllers\ReportesController@reporteEmpaquesDetallado']);
+
+        Route::get('/reporte_egresos', ['as' => 'reporte.egresos', 'uses' => 'App\Http\Controllers\ReportesController@reporteEgresados']);
+        Route::post('/reporte_egresos', ['as' => 'reporte.egresos', 'uses' => 'App\Http\Controllers\ReportesController@reporteEgresados']);
         
+        
+        Route::post('/reporteEgresadosExcel', ['as' => 'reporte.lista_egresos.excel', 'uses' => 'App\Http\Controllers\ReportesController@reporteEgresadosExcel']);
+
 });
 
 

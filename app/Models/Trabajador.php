@@ -28,4 +28,6 @@ class Trabajador extends Model
         'sexo',
         'empresa_id'
     ];
+
+    
 }

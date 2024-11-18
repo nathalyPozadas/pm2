@@ -169,6 +169,13 @@
                                         </select>
 
                                     </div>
+
+                                    <!-- Numero -->
+                                    <div class="form-group">
+                                        <label for="input-numero" class="form-control-label">Número</label>
+                                        <input type="text" name="numero" id="input-numero" class="form-control form-control-alternative" placeholder="" >
+                                    </div>
+
                                     <!-- Tipo de empaque -->
                                     <div class="form-group">
                                         <label for="input-tipo" class="form-control-label">Tipo de empaque</label>
@@ -223,19 +230,19 @@
                                     </div>
                                 
                                     <!-- Criterio 1 -->
-                                    <div class="custom-control custom-checkbox">
+                                    <div class="custom-control custom-checkbox d-none">
                                         <input type="checkbox" class="custom-control-input" id="criterio1" name="criterio1">
                                         <label class="custom-control-label" for="criterio1">Criterio 1</label>
                                     </div>
 
                                     <!-- Criterio 1 -->
-                                    <div class="custom-control custom-checkbox">
+                                    <div class="custom-control custom-checkbox d-none">
                                         <input type="checkbox" class="custom-control-input" id="criterio2" name="criterio2">
                                         <label class="custom-control-label" for="criterio2">Criterio 2</label>
                                     </div>
 
                                     <!-- Criterio 3 -->
-                                    <div class="custom-control custom-checkbox">
+                                    <div class="custom-control custom-checkbox d-none">
                                         <input type="checkbox" class="custom-control-input" id="criterio3" name="criterio3">
                                         <label class="custom-control-label" for="criterio3">Criterio 3</label>
                                     </div>
@@ -315,6 +322,12 @@
                             <div class="modal-body">
                                         <input type="text" name="vista" id="vista" value="vista_empaques" class="form-control form-control-alternative d-none" >
 
+                                    <!-- Numero -->
+                                    <div class="form-group">
+                                        <label for="input-numero" class="form-control-label">Número</label>
+                                        <input type="text" name="numero" id="input-numero" class="form-control form-control-alternative" placeholder="" value="${empaque.numero}" >
+                                    </div>
+                                        
                                     <!-- Tipo de empaque -->
                                     <div class="form-group">
                                         <label for="input-tipo" class="form-control-label">Tipo de empaque</label>
@@ -325,6 +338,8 @@
                                         </select>
 
                                     </div>
+
+                                    
 
                                     <!-- Cantidad de Cajas -->
                                     <div id="cantidad_cajas_form_group" class="form-group"  "${empaque.tipo != 'pallet' ? 'hide' : '' }" >
@@ -367,7 +382,7 @@
                                     </div>
                             
                                     <!-- Criterio 1 -->
-                                    <div class="custom-control custom-checkbox">
+                                    <div class="custom-control custom-checkbox d-none">
                                         <input type="checkbox" class="custom-control-input" id="criterio1" name="criterio1" 
                                             ${empaque.criterio1 ? 'checked' : '' }>
                                         <label class="custom-control-label" for="criterio1">Criterio 1</label>
@@ -375,14 +390,14 @@
 
 
                                     <!-- Criterio 2 -->
-                                    <div class="custom-control custom-checkbox">
+                                    <div class="custom-control custom-checkbox d-none">
                                         <input type="checkbox" class="custom-control-input" id="criterio2" name="criterio2"
                                             ${empaque.criterio2 ? 'checked' : '' }>
                                         <label class="custom-control-label" for="criterio2">Criterio 2</label>
                                     </div>
 
                                     <!-- Criterio 3 -->
-                                    <div class="custom-control custom-checkbox">
+                                    <div class="custom-control custom-checkbox d-none">
                                         <input type="checkbox" class="custom-control-input" id="criterio3" name="criterio3"
                                             ${empaque.criterio3 ? 'checked' : '' } >
                                         <label class="custom-control-label" for="criterio3">Criterio 3</label>

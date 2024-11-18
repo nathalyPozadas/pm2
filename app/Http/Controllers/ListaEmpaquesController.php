@@ -11,6 +11,7 @@ use App\Models\ListaEmpaques;
 use App\Models\Movimiento;
 use App\Models\Proveedor;
 use App\Models\UbicacionAlmacen;
+use DB;
 use Illuminate\Http\Request;
 
 class ListaEmpaquesController extends Controller
@@ -19,7 +20,11 @@ class ListaEmpaquesController extends Controller
     {
         $empresa = Empresa::find(auth()->user()->empresa_id);
 
-        $listas = ListaEmpaques::where('lista_empaques.empresa_id','=',$empresa->id)
+        $listas = ListaEmpaques::where('lista_empaques.empresa_id', '=', $empresa->id)
+        ->whereNot(function ($query) {
+            $query->where('lista_empaques.stock_esperado', '=', DB::raw('lista_empaques.stock_registrado'))
+                ->where('lista_empaques.stock_actual', '=', 0);
+        })
         ->join('proveedor', 'lista_empaques.proveedor_id', '=', 'proveedor.id')
         ->select(  'lista_empaques.id',
                             'lista_empaques.codigo',
@@ -37,7 +42,6 @@ class ListaEmpaquesController extends Controller
                             'proveedor.nombre as proveedor_nombre')
         ->orderBy('lista_empaques.id', 'desc')
         ->get();
-
         foreach($listas as $lista){
             $lista->tiene_movimientos = $this->tieneMovimientos($lista->id);
         }
