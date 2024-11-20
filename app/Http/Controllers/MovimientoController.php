@@ -8,6 +8,7 @@ use App\Models\Empaque;
 use App\Models\Empresa;
 use App\Models\ListaEmpaques;
 use App\Models\Movimiento;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MovimientoController extends Controller
@@ -21,10 +22,18 @@ class MovimientoController extends Controller
                     ->where('id', $request->empaque_id)
                     ->firstOrFail();
 
+            $horaRecibida = $request->hora; 
+            $horaUTC = Carbon::createFromFormat('H:i:s', $horaRecibida, 'America/La_Paz')
+                ->setTimezone('UTC');
+
+            $timezoneUsuario = 'America/La_Paz';
+
+            
             $movimientoEmpaque = new Movimiento();
             $movimientoEmpaque->empaque_id = $request->empaque_id;
-            $movimientoEmpaque->fecha = $request->fecha;
-            $movimientoEmpaque->hora = $request->hora;
+            $movimientoEmpaque->fecha =  $request->fecha;
+            $movimientoEmpaque->hora = $horaUTC;
+
             $movimientoEmpaque->tipo_movimiento = $request->tipo_movimiento;
             $movimientoEmpaque->encargado_id = auth()->user()->trabajador_id;
             $movimientoEmpaque->empresa_id = auth()->user()->empresa_id;

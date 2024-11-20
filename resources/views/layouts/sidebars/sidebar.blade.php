@@ -11,13 +11,11 @@
                     <i class="far fa-list-alt text-primary"></i> {{ __('Packing List') }}
                 </a>
             </li>
-            <!--
             <li class="nav-item">
                 <a class="nav-link" href="{{ route( 'empaque.index')}}">
                     <i class="fas fa-pallet text-primary"></i> {{ __('Empaques') }}
                 </a>
             </li>
-            -->
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class="fas fa-dolly text-primary"></i> {{ __('Movimientos') }}
@@ -54,12 +52,13 @@
                                     {{ __('Reporte Empaques') }}
                                 </a>
                             </li>
-                            <li class="nav-item">
+                            
+                            <!--<li class="nav-item">
                                 <a class="nav-link" href="{{ route( 'reporte.empaques_movimiento')}}">
                                     {{ __('Reporte Empaques detallado') }}
                                 </a>
-                            </li>
-                            
+                            </li>-->
+
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route( 'reporte.egresos')}}">
                                     {{ __('Reporte Egresos') }}

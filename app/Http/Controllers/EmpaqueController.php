@@ -51,13 +51,17 @@ class EmpaqueController extends Controller
         
         $icono_empresa = $empresa->icono;
 
-        $listas = ListaEmpaques::all();
+        
+        $listas = ListaEmpaques::whereNot(function ($query) {
+            $query->where('lista_empaques.stock_esperado', '=', DB::raw('lista_empaques.stock_registrado'))
+                ->where('lista_empaques.stock_actual', '=', 0);
+        })->get();
 
         return view("empaques.index", ['listas' => $listas, 'empaques' => $empaques, 'icono_empresa' => $icono_empresa, 'almacenes' => $almacenes]);
     }
 
 
-    public function store(Request $request)
+    public function store(EmpaqueRequest $request)
     {
         try {
 

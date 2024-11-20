@@ -50,7 +50,7 @@
                                 <tr>
                                     <td><span class="badge badge-dot-lg mr-4">
                                     <i class="@if($empaque->estado == 'dañado') bg-danger @elseif($empaque->estado == 'correcto') bg-success @elseif($empaque->estado == 'mermado') bg-warning @endif"></i>
-                                        </span>{{$empaque->id}}</td>
+                                        </span>{{$empaque->numero}}</td>
                                     <td>{{$empaque->empaque_lista_empaque_codigo}}</td>
                                     <td style="text-transform: uppercase;">{{$empaque->tipo}}</td>
                                     <td>{{ $empaque->descripcion}}</td>
@@ -152,8 +152,8 @@
                             </button>
                         </div>
                             <form id="formRegistrarEmpaque" method="POST" action="{{ route('empaque.store' ) }}">
-                                    @csrf
-                                    @method('post')
+                            @csrf
+                            @method('post')
                             <div class="modal-body">
                                     
                                     <input type="text" name="vista" id="vista" value="vista_empaques" class="form-control form-control-alternative d-none" >
@@ -173,7 +173,8 @@
                                     <!-- Numero -->
                                     <div class="form-group">
                                         <label for="input-numero" class="form-control-label">Número</label>
-                                        <input type="text" name="numero" id="input-numero" class="form-control form-control-alternative" placeholder="" >
+                                        <input type="text" name="numero" id="input-numero" class="form-control form-control-alternative " placeholder="">
+                                  
                                     </div>
 
                                     <!-- Tipo de empaque -->
@@ -653,6 +654,9 @@
                 }
             });
         }
+
+
+        
 
 
         

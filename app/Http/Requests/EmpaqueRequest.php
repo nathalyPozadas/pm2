@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Empaque;
+use App\Models\ListaEmpaques;
 use Illuminate\Foundation\Http\FormRequest;
 
 class EmpaqueRequest extends FormRequest
@@ -32,10 +34,29 @@ class EmpaqueRequest extends FormRequest
             'estado'=> 'required',
             'observacion_estado'=> 'nullable',
             'lista_empaques_id'=> 'required|exists:lista_empaques,id',
-            'ubicacion_almacen_id'=> 'required|exists:ubicacion_almacen,id',
             'criterio1'=> 'nullable',
             'criterio2'=> 'nullable',
-            'criterio3'=> 'nullable'
+            'criterio3'=> 'nullable',
+            'numero' => 'required'
         ];
     }
+/*
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $numero = $this->input('numero');
+            $listaEmpaqueId = $this->input('lista_empaques_id');
+
+            if ($numero && $listaEmpaqueId) {
+                $exists = Empaque::where('numero','=', $numero)
+                    ->where('lista_empaques_id', '=',$listaEmpaqueId)
+                    ->exists();
+
+                if ($exists) {
+                    $validator->errors()->add('numero', 'El número de empaque debe ser único dentro de la lista de empaque.');
+                }
+            }
+        });
+    }
+        */
 }
