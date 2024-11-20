@@ -93,11 +93,6 @@
                                             <div class="form-group mx-3 mb-3">
                                                 <label class="form-control-label" >{{ __('Total peso') }}</label>
                                                 <br>
-                                                <span class="description" >{{$cantEgresados}}</span>
-                                            </div>
-                                            <div class="form-group mx-3 mb-3">
-                                                <label class="form-control-label" >{{ __('Total peso') }}</label>
-                                                <br>
                                                 <ul>
                                                     @foreach ($detalleEgresados['peso_por_unidad'] as $unidad => $pesoTotal)
                                                         @if($unidad!== '')
