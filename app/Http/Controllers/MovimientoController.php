@@ -22,12 +22,16 @@ class MovimientoController extends Controller
                     ->where('id', $request->empaque_id)
                     ->firstOrFail();
 
-            $horaRecibida = $request->hora; 
+            $horaRecibida = $request->hora;
+            if (preg_match('/^\d{2}:\d{2}$/', $horaRecibida)) {
+                $horaRecibida .= ':00'; 
+            }
+            
             $horaUTC = Carbon::createFromFormat('H:i:s', $horaRecibida, 'America/La_Paz')
                 ->setTimezone('UTC');
-
-            $timezoneUsuario = 'America/La_Paz';
-
+               
+            
+               
             
             $movimientoEmpaque = new Movimiento();
             $movimientoEmpaque->empaque_id = $request->empaque_id;

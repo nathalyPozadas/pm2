@@ -27,7 +27,9 @@ class MovimientoRequest extends FormRequest
             'tipo_movimiento' => 'required',
             'fecha' => ['required', 'date', function ($attribute, $value, $fail) {
                 $this->validateYear($value, $fail);
-            }]
+            }],
+            'hora' => 'required'
+
         ];
     }
     private function validateYear($value, $fail)

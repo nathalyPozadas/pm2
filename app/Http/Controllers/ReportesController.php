@@ -225,7 +225,7 @@ class ReportesController extends Controller
             
             $lista->contenido = $empaques;
         }
-
+        
         return $listas;
     }
 
