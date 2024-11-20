@@ -25,7 +25,7 @@ class ReporteEmpaques implements FromCollection, WithHeadings, WithStyles, WithE
         $this->fechaReporte = $fechaReporte;
         $this->listas = $listas;
         $this->filtros = $filtros;
-        $this->cabecera = ['Lista de Empaque','N° Empaque','Empaque','Detalle','Peso','U.M.','Almacen','Lugar'];
+        $this->cabecera = ['Lista de Empaque','N° Empaque','Empaque','Detalle','Peso','U.M.','Ubicación Anterior','Ubicación Actual'];
         $this->seccionTabla = [];
 
     }
@@ -55,8 +55,8 @@ class ReporteEmpaques implements FromCollection, WithHeadings, WithStyles, WithE
                         $empaque->descripcion,
                         $empaque->peso,
                         $empaque->unidad_medida,
-                        $empaque->empaque_almacen,
-                        $empaque->empaque_ubicacion
+                        $empaque->ub_anterior,
+                        $empaque->empaque_almacen.' > '.$empaque->empaque_ubicacion
                     ];
             }
             $seccion[1]=$pos;
