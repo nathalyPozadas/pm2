@@ -53,11 +53,11 @@
                                 </a>
                             </li>
                             
-                            <!--<li class="nav-item">
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route( 'reporte.empaques_movimiento')}}">
                                     {{ __('Reporte Empaques detallado') }}
                                 </a>
-                            </li>-->
+                            </li>
 
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route( 'reporte.egresos')}}">
